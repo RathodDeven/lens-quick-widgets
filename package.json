@@ -1,0 +1,17 @@
+{
+  "name": "lens-beauty-widgets",
+  "private": true,
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.11.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm -r run dev",
+    "build": "pnpm -r run build",
+    "clean": "pnpm -r run clean",
+    "dev:ui": "pnpm --filter @lens-quick-widgets/ui run dev",
+    "dev:web": "pnpm --filter web run dev"
+  }
+}
