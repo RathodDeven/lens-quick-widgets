@@ -7,13 +7,7 @@ import {
 } from "@lens-protocol/react"
 import { useAccountStats } from "./hooks/useAccountStats"
 import { motion, AnimatePresence } from "framer-motion"
-import {
-  FaUsers,
-  FaUserFriends,
-  FaExclamationCircle,
-  FaUserPlus,
-  FaUserMinus,
-} from "react-icons/fa"
+import { FaExclamationCircle, FaUserPlus, FaUserMinus } from "react-icons/fa"
 import {
   backgroundColorMap,
   foregroundColorMap,
