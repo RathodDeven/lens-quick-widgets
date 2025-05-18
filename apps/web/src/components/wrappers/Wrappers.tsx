@@ -1,19 +1,19 @@
 'use client'
 import React from 'react'
-import RainbowKitWrapper from './RainbowKitWrapper'
 import UILayout from './UILayout'
 import MuiThemeWrapper from './MuiThemeWrapper'
 import ThemeProvider from './TailwindThemeProvider'
 import { Toaster } from 'react-hot-toast'
+import WagmiWrapper from './WagmiWrapper'
 
 const Wrappers = ({ children }: { children: React.ReactNode }) => {
   return (
     <ThemeProvider>
       <MuiThemeWrapper>
-        <RainbowKitWrapper>
+        <WagmiWrapper>
           <Toaster position={'top-center'} />
           <UILayout>{children}</UILayout>
-        </RainbowKitWrapper>
+        </WagmiWrapper>
       </MuiThemeWrapper>
     </ThemeProvider>
   )

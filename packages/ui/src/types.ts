@@ -25,6 +25,7 @@ export enum ThemeColor {
 }
 
 export enum Size {
+  compact = "compact",
   small = "small",
   medium = "medium",
   large = "large",
