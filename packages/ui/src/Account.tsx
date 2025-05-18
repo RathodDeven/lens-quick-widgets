@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from "react"
 import { Size, Theme, ThemeColor } from "./types"
-import { Account as AccountType, useAccount } from "@lens-protocol/react"
+import {
+  Account as AccountType,
+  useAccount,
+  useAuthenticatedUser,
+} from "@lens-protocol/react"
 import { useAccountStats } from "./hooks/useAccountStats"
 import { motion, AnimatePresence } from "framer-motion"
-import { FaUsers, FaUserFriends, FaExclamationCircle } from "react-icons/fa"
+import {
+  FaUsers,
+  FaUserFriends,
+  FaExclamationCircle,
+  FaUserPlus,
+  FaUserMinus,
+} from "react-icons/fa"
 import {
   backgroundColorMap,
   foregroundColorMap,
@@ -15,6 +25,10 @@ import { COVER_IMAGE_PLACE_HOLDER } from "./config"
 import { ImageModal } from "./ImageModal"
 import Tooltip from "./Tooltip"
 import Markup from "./Lexical/Markup"
+import { useFollow } from "./hooks/useFollow"
+import { useUnFollow } from "./hooks/useUnFollow"
+import LoginPopUp from "./LoginPopUp"
+import toast from "react-hot-toast"
 
 /**
  * Account Component - Displays a Lens Protocol user profile
@@ -51,9 +65,7 @@ export const Account = ({
   theme = Theme.default,
   containerStyle,
   followButtonStyle,
-  followButtonContainerStyle,
-  followButtonTextColor,
-  hideFollowButton,
+  hideFollowButton = false,
   onFollowed,
   onClick,
   size = Size.medium,
@@ -82,14 +94,6 @@ export const Account = ({
   // Determine contrast color based on actual background color
   const contrastTextColor = getContrastColor(backgroundColor)
   const isDarkBackground = contrastTextColor === ThemeColor.white
-
-  // Size reference values (no longer enforced)
-  const sizeReference = {
-    compact: { width: 180 },
-    small: { width: 200 },
-    medium: { width: 350 },
-    large: { width: 500 },
-  }
 
   // Font sizes by component size
   const fontSizes = {
@@ -121,7 +125,14 @@ export const Account = ({
     account: account?.address,
   })
 
-  console.log("Account Stats:", accountStats)
+  const { data: authenticatedUser } = useAuthenticatedUser()
+  const { execute: followUser, loading: followLoading } = useFollow()
+  const { execute: unfollowUser, loading: unfollowLoading } = useUnFollow()
+  const [showLoginPopup, setShowLoginPopup] = useState(false)
+  // Add local follow state to manage UI updates immediately
+  const [isFollowedLocally, setIsFollowedLocally] = useState<
+    boolean | undefined
+  >(undefined)
 
   useEffect(() => {
     if (error) {
@@ -132,11 +143,243 @@ export const Account = ({
   useEffect(() => {
     if (account) {
       onAccountLoad?.(account)
+      // Initialize local follow state from account data when it loads
+      setIsFollowedLocally(account.operations?.isFollowedByMe)
     }
-  }, [account?.address])
+  }, [account?.address, account?.operations?.isFollowedByMe])
 
   const loading = accountLoading || statsLoading
   const hasError = (error || statsError) && !loading
+
+  // Determine if loading follow-related actions
+  const isFollowLoading = followLoading || unfollowLoading
+
+  // Helper function to render follow button based on size
+  const renderFollowButton = () => {
+    // Use the local state if defined, otherwise fall back to API data
+    const isFollowed =
+      isFollowedLocally !== undefined
+        ? isFollowedLocally
+        : account?.operations?.isFollowedByMe === true
+
+    const buttonAction = isFollowed ? handleUnfollow : handleFollow
+
+    // Hide follow button if user is viewing their own profile or if hideFollowButton is true
+    const isOwnProfile =
+      authenticatedUser?.address?.toLowerCase() ===
+      account?.address?.toLowerCase()
+    if (hideFollowButton || isOwnProfile) return null
+
+    // Compact size - icon with accent color background
+    if (size === Size.compact) {
+      return (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            if (!authenticatedUser) {
+              setShowLoginPopup(true)
+              return
+            }
+            buttonAction()
+          }}
+          disabled={isFollowLoading}
+          style={{
+            backgroundColor: accentColor,
+            color: getContrastColor(accentColor),
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "4px",
+            marginLeft: "8px", // Add space between name and button
+            borderRadius: "50%",
+            width: "22px",
+            height: "22px",
+            minWidth: "22px",
+          }}
+          title={isFollowed ? "Unfollow" : "Follow"}
+        >
+          {isFollowLoading ? (
+            <div
+              style={{
+                width: "12px",
+                height: "12px",
+                borderRadius: "50%",
+                border: "2px solid rgba(255,255,255,0.3)",
+                borderTopColor: "white",
+                animation: "spin 1s linear infinite",
+              }}
+            />
+          ) : isFollowed ? (
+            <FaUserMinus size={12} />
+          ) : (
+            <FaUserPlus size={12} />
+          )}
+        </button>
+      )
+    }
+
+    // Small size - smaller button
+    if (size === Size.small) {
+      return (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            if (!authenticatedUser) {
+              setShowLoginPopup(true)
+              return
+            }
+            buttonAction()
+          }}
+          disabled={isFollowLoading}
+          style={{
+            backgroundColor: accentColor,
+            color: getContrastColor(accentColor),
+            border: "none",
+            borderRadius: "16px",
+            padding: "4px 8px", // Smaller padding
+            fontWeight: "bold",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "11px", // Smaller font
+            marginLeft: "12px", // More space
+            ...followButtonStyle,
+          }}
+        >
+          {isFollowLoading ? (
+            <div
+              style={{
+                width: "12px", // Smaller loader
+                height: "12px",
+                borderRadius: "50%",
+                border: "2px solid rgba(255,255,255,0.3)",
+                borderTopColor: "white",
+                animation: "spin 1s linear infinite",
+              }}
+            />
+          ) : (
+            <>
+              {isFollowed ? (
+                <FaUserMinus size={10} style={{ marginRight: "4px" }} />
+              ) : (
+                <FaUserPlus size={10} style={{ marginRight: "4px" }} />
+              )}
+              {isFollowed ? "Unfollow" : "Follow"}
+            </>
+          )}
+        </button>
+      )
+    }
+
+    // Medium size
+    if (size === Size.medium) {
+      return (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            if (!authenticatedUser) {
+              setShowLoginPopup(true)
+              return
+            }
+            buttonAction()
+          }}
+          disabled={isFollowLoading}
+          style={{
+            backgroundColor: accentColor,
+            color: getContrastColor(accentColor),
+            border: "none",
+            borderRadius: "20px",
+            padding: "6px 12px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "12px",
+            marginLeft: "16px", // More space
+            ...followButtonStyle,
+          }}
+        >
+          {isFollowLoading ? (
+            <div
+              style={{
+                width: "16px",
+                height: "16px",
+                borderRadius: "50%",
+                border: "2px solid rgba(255,255,255,0.3)",
+                borderTopColor: "white",
+                animation: "spin 1s linear infinite",
+              }}
+            />
+          ) : (
+            <>
+              {isFollowed ? (
+                <FaUserMinus size={12} style={{ marginRight: "4px" }} />
+              ) : (
+                <FaUserPlus size={12} style={{ marginRight: "4px" }} />
+              )}
+              {isFollowed ? "Unfollow" : "Follow"}
+            </>
+          )}
+        </button>
+      )
+    }
+
+    // Large size
+    return (
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          if (!authenticatedUser) {
+            setShowLoginPopup(true)
+            return
+          }
+          buttonAction()
+        }}
+        disabled={isFollowLoading}
+        style={{
+          backgroundColor: accentColor,
+          color: getContrastColor(accentColor),
+          border: "none",
+          borderRadius: "20px",
+          padding: "8px 16px",
+          fontWeight: "bold",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minWidth: "100px",
+          marginLeft: "20px", // More space
+          ...followButtonStyle,
+        }}
+      >
+        {isFollowLoading ? (
+          <div
+            style={{
+              width: "20px",
+              height: "20px",
+              borderRadius: "50%",
+              border: "2px solid rgba(255,255,255,0.3)",
+              borderTopColor: "white",
+              animation: "spin 1s linear infinite",
+            }}
+          />
+        ) : (
+          <>
+            {isFollowed ? (
+              <FaUserMinus size={14} style={{ marginRight: "6px" }} />
+            ) : (
+              <FaUserPlus size={14} style={{ marginRight: "6px" }} />
+            )}
+            {isFollowed ? "Unfollow" : "Follow"}
+          </>
+        )}
+      </button>
+    )
+  }
 
   // Styles
   const styles = {
@@ -156,23 +399,33 @@ export const Account = ({
       display: size === Size.compact ? "flex" : "block",
       alignItems: size === Size.compact ? "center" : "flex-start",
       maxWidth:
-        size === Size.medium ? "350px" : size === Size.large ? "500px" : "auto",
+        size === Size.medium ? "600px" : size === Size.large ? "700px" : "auto",
       ...containerStyle,
     },
     header: {
       display: "flex",
-      alignItems: "center",
       marginBottom: size === Size.compact ? "0" : "0",
       width: size === Size.compact ? "100%" : "auto",
       padding: size === Size.medium || size === Size.large ? "0 20px" : "0",
-      flexDirection:
-        size === Size.medium || size === Size.large
-          ? ("column" as const)
-          : ("row" as const),
-      textAlign:
-        size === Size.medium || size === Size.large
-          ? ("center" as const)
-          : ("left" as const),
+      flexDirection: (size === Size.compact
+        ? "row"
+        : (size === Size.medium || size === Size.large) && !hideFollowButton
+        ? "column"
+        : size === Size.medium || size === Size.large
+        ? "column"
+        : "row") as React.CSSProperties["flexDirection"],
+      justifyContent: size === Size.compact ? "flex-start" : "center",
+      textAlign: (!hideFollowButton &&
+      (size === Size.medium || size === Size.large)
+        ? "left"
+        : size === Size.medium || size === Size.large
+        ? "center"
+        : "left") as React.CSSProperties["textAlign"],
+      // Align profile image to left when follow button is visible
+      alignItems:
+        !hideFollowButton && (size === Size.medium || size === Size.large)
+          ? "flex-start"
+          : "center",
     },
     profilePic: {
       width:
@@ -198,28 +451,43 @@ export const Account = ({
         size === Size.medium || size === Size.large
           ? `3px solid ${backgroundColor}`
           : "none",
+      backgroundColor: backgroundColor,
       marginTop: size === Size.medium || size === Size.large ? "-30px" : "0", // Half overlapping the banner
     },
     profileInfo: {
-      marginLeft: size === Size.medium || size === Size.large ? "0" : "12px",
-      marginTop: size === Size.medium || size === Size.large ? "8px" : "0",
+      marginLeft:
+        size === Size.compact
+          ? "12px"
+          : size === Size.medium || size === Size.large
+          ? "0"
+          : "12px",
+      // Reduced spacing for medium and large
+      marginTop: size === Size.medium || size === Size.large ? "4px" : "0",
       flex: 1,
       overflow: size === Size.compact ? "hidden" : "visible",
-      display: "block",
-      justifyContent: "center" as const,
-      textAlign:
-        size === Size.medium || size === Size.large
-          ? ("center" as const)
-          : ("left" as const),
+      display: "flex",
+      flexDirection: "column" as React.CSSProperties["flexDirection"],
+      justifyContent: "center" as React.CSSProperties["justifyContent"],
+      alignItems: (!hideFollowButton &&
+      (size === Size.medium || size === Size.large)
+        ? "flex-start"
+        : size === Size.medium || size === Size.large
+        ? "center"
+        : "flex-start") as React.CSSProperties["alignItems"],
+      textAlign: (!hideFollowButton &&
+      (size === Size.medium || size === Size.large)
+        ? "left"
+        : size === Size.medium || size === Size.large
+        ? "center"
+        : "left") as React.CSSProperties["textAlign"],
     },
     compactInfo: {
-      // New style for compact info layout
       display: "flex",
       flexDirection: "column" as const,
       justifyContent: "center" as const,
       height: "30px", // Match the height of the profile image in compact mode
       overflow: "hidden" as const,
-      width: "100%",
+      width: "auto", // Changed from 100% to auto to allow space for follow button
     },
     name: {
       fontWeight: "bold",
@@ -265,13 +533,20 @@ export const Account = ({
       display: "flex",
       gap: size === Size.small ? "12px" : "16px",
       fontSize: fontSizes[size],
-      marginTop: size === Size.medium || size === Size.large ? "12px" : "12px",
+      // Reduce top margin for medium/large
+      marginTop: size === Size.medium || size === Size.large ? "8px" : "12px",
       marginBottom: "0px",
       alignItems: "center",
+      // Left-align stats for small size too
       justifyContent:
-        size === Size.medium || size === Size.large ? "center" : "flex-start",
+        size === Size.small || size === Size.large ? "flex-start" : "center",
       flexWrap: "wrap" as const,
-      padding: size === Size.medium || size === Size.large ? "0 20px" : "0",
+      padding:
+        size === Size.large
+          ? "0 20px 0 20px"
+          : size === Size.medium
+          ? "0 10px"
+          : "0",
     },
     statItem: {
       display: "flex",
@@ -327,6 +602,14 @@ export const Account = ({
     // Add style for stats container to ensure proper bottom spacing
     statsContainer: {
       marginBottom: "0px", // No margin, rely on container padding
+    },
+    headerRow: {
+      display: "flex",
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "space-between",
+      // Reduced spacing
+      marginTop: size === Size.medium || size === Size.large ? "4px" : "0",
     },
   }
 
@@ -393,7 +676,7 @@ export const Account = ({
           </div>
         ) : (
           <>
-            <div style={{ ...styles.header }}>
+            <div style={styles.header}>
               <motion.div
                 animate={{ opacity: [0.5, 0.8, 0.5] }}
                 transition={{ repeat: Infinity, duration: 1.5 }}
@@ -511,8 +794,55 @@ export const Account = ({
     )
   }
 
-  // Remove console.log statements
-  console.log("Account:", account)
+  // Function to handle follow action
+  async function handleFollow() {
+    if (!account?.address) return
+
+    try {
+      const result = await followUser({
+        account: account?.address,
+      })
+
+      if (result.isOk()) {
+        // Update local state immediately on success
+        setIsFollowedLocally(true)
+        toast.success(
+          `You are now following ${
+            account?.username?.localName || "this account"
+          }`
+        )
+        onFollowed?.()
+      } else {
+        toast.error(result.error.message || "Failed to follow")
+      }
+    } catch (error) {
+      toast.error((error as Error).message || "An error occurred")
+    }
+  }
+
+  // Function to handle unfollow action
+  async function handleUnfollow() {
+    if (!account?.address) return
+
+    try {
+      const result = await unfollowUser({
+        account: account?.address,
+      })
+
+      if (result.isOk()) {
+        // Update local state immediately on success
+        setIsFollowedLocally(false)
+        toast.success(
+          `You unfollowed ${account?.username?.localName || "this account"}`
+        )
+        onFollowed?.()
+      } else {
+        toast.error(result.error.message || "Failed to unfollow")
+      }
+    } catch (error) {
+      toast.error((error as Error).message || "An error occurred")
+    }
+  }
 
   // Main component render
   return (
@@ -586,65 +916,117 @@ export const Account = ({
               }
             />
 
-            <div style={styles.profileInfo}>
-              {size === Size.compact ? (
-                // Updated compact layout to show both name and username
-                <div style={styles.compactInfo}>
-                  {account?.metadata?.name && (
+            {size === Size.compact ? (
+              // Compact layout with follow button inline
+              <div style={styles.profileInfo}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
+                  <div style={styles.compactInfo}>
+                    {account?.metadata?.name && (
+                      <motion.div
+                        style={styles.name}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3, delay: 0.1 }}
+                      >
+                        {account.metadata.name}
+                      </motion.div>
+                    )}
                     <motion.div
-                      style={styles.name}
+                      style={styles.username}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3, delay: 0.1 }}
+                      transition={{ duration: 0.3 }}
                     >
-                      {account.metadata.name}
+                      @
+                      {account?.username?.localName ||
+                        account?.address?.slice(0, 6) +
+                          "..." +
+                          account?.address?.slice(-4)}
                     </motion.div>
-                  )}
-                  <motion.div
-                    style={styles.username}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    @
-                    {account?.username?.localName ||
-                      account?.address?.slice(0, 6) +
-                        "..." +
-                        account?.address?.slice(-4)}
-                  </motion.div>
+                  </div>
+                  {renderFollowButton()}
                 </div>
-              ) : (
-                // Standard layout for other sizes
-                <>
-                  {account?.metadata?.name && (
+              </div>
+            ) : size === Size.small ? (
+              // Small layout - with follow button beside username/name
+              <div style={styles.profileInfo}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    gap: "12px", // Add gap for better spacing
+                  }}
+                >
+                  <div>
+                    {account?.metadata?.name && (
+                      <motion.div
+                        style={styles.name}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3, delay: 0.1 }}
+                      >
+                        {account.metadata.name}
+                      </motion.div>
+                    )}
                     <motion.div
-                      style={styles.name}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3, delay: 0.1 }}
+                      transition={{ duration: 0.3, delay: 0.2 }}
+                      style={styles.username}
                     >
-                      {account.metadata.name}
+                      @
+                      {account?.username?.localName ||
+                        account?.address?.slice(0, 6) +
+                          "..." +
+                          account?.address?.slice(-4)}
                     </motion.div>
-                  )}
-
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3, delay: 0.2 }}
-                    style={styles.username}
-                  >
-                    @
-                    {account?.username?.localName ||
-                      account?.address?.slice(0, 6) +
-                        "..." +
-                        account?.address?.slice(-4)}
-                  </motion.div>
-                </>
-              )}
-            </div>
+                  </div>
+                  {!hideFollowButton && renderFollowButton()}
+                </div>
+              </div>
+            ) : (
+              // Medium and large layout - push follow button to the far right
+              <div style={styles.profileInfo}>
+                <div style={styles.headerRow}>
+                  <div>
+                    {account?.metadata?.name && (
+                      <motion.div
+                        style={styles.name}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3, delay: 0.1 }}
+                      >
+                        {account.metadata.name}
+                      </motion.div>
+                    )}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: 0.2 }}
+                      style={styles.username}
+                    >
+                      @
+                      {account?.username?.localName ||
+                        account?.address?.slice(0, 6) +
+                          "..." +
+                          account?.address?.slice(-4)}
+                    </motion.div>
+                  </div>
+                  {renderFollowButton()}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Stats section - Updated format */}
+          {/* Stats section - don't show icons in small size */}
           {size !== Size.compact && accountStats && (
             <motion.div
               style={styles.stats}
@@ -660,10 +1042,7 @@ export const Account = ({
                 position="top"
               >
                 <div style={styles.statItem}>
-                  {/* Only show icons for small size */}
-                  {size === Size.small && (
-                    <FaUsers size={12} color={accentColor} />
-                  )}
+                  {/* Only show icons for small size - removed as requested */}
                   <span style={styles.statNumber}>
                     {accountStats?.graphFollowStats?.followers || 0}
                   </span>
@@ -679,10 +1058,7 @@ export const Account = ({
                 position="top"
               >
                 <div style={styles.statItem}>
-                  {/* Only show icons for small size */}
-                  {size === Size.small && (
-                    <FaUserFriends size={12} color={accentColor} />
-                  )}
+                  {/* Only show icons for small size - removed as requested */}
                   <span style={styles.statNumber}>
                     {accountStats?.graphFollowStats?.following || 0}
                   </span>
@@ -692,7 +1068,7 @@ export const Account = ({
             </motion.div>
           )}
 
-          {/* Bio section - Only show for large size */}
+          {/* Bio section */}
           {size === Size.large && account?.metadata?.bio && (
             <motion.div
               style={styles.bioContainer}
@@ -704,6 +1080,38 @@ export const Account = ({
             </motion.div>
           )}
         </div>
+
+        {/* Login popup - Only show for non-self profiles */}
+        {showLoginPopup &&
+          authenticatedUser?.address?.toLowerCase() !==
+            account?.address?.toLowerCase() && (
+            <LoginPopUp
+              onClose={() => setShowLoginPopup(false)}
+              onSuccess={() => {
+                if (account?.operations?.isFollowedByMe) {
+                  handleUnfollow()
+                } else {
+                  handleFollow()
+                }
+              }}
+            />
+          )}
+
+        {/* Replace the jsx global style tag with a standard style tag */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+            @keyframes spin {
+              0% {
+                transform: rotate(0deg);
+              }
+              100% {
+                transform: rotate(360deg);
+              }
+            }
+          `,
+          }}
+        />
       </motion.div>
     </AnimatePresence>
   )

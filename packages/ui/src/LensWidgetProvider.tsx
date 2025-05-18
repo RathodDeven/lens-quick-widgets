@@ -6,6 +6,7 @@ import {
 } from "@lens-protocol/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ConnectKitProvider } from "connectkit"
+import { Toaster } from "react-hot-toast"
 
 const queryClient = new QueryClient()
 
@@ -24,7 +25,17 @@ export const LensWidgetProvider = ({
   return (
     <QueryClientProvider client={queryClient}>
       <ConnectKitProvider>
-        <LensProvider client={client}>{children}</LensProvider>
+        <LensProvider client={client}>
+          <>
+            <Toaster
+              position={"top-center"}
+              containerStyle={{
+                marginTop: "40px",
+              }}
+            />
+            {children}
+          </>
+        </LensProvider>
       </ConnectKitProvider>
     </QueryClientProvider>
   )
