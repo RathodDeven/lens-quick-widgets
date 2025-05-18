@@ -44,10 +44,10 @@ import { useLensWidget } from "./LensWidgetContext"
  * @param {Function} [props.onFollowed] - Callback when user is followed
  * @param {Function} [props.onClick] - Callback when the component is clicked, receives account and stats data
  * @param {Size} [props.size=Size.medium] - Size of the component:
- *   - compact: 180×40px - inline minimal display for headers
- *   - small: 200×150px - minimal info
- *   - medium: 350×300px - standard info
- *   - large: 500×400px - complete profile
+ *   - compact:inline minimal display for headers
+ *   - small:minimal info
+ *   - medium: standard info
+ *   - large: complete profile
  * @param {string} [props.fontSize] - Custom font size
  * @returns {JSX.Element | null} The rendered Account component
  */

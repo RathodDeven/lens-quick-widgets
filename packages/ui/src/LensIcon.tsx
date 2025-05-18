@@ -1,13 +1,15 @@
-import { Size, Theme } from "./types"
-import { backgroundColorMap, foregroundColorMap, dimensionsMap } from "./utils"
+import { Theme } from "./types"
+import { backgroundColorMap, foregroundColorMap } from "./utils"
 
-export default function LensIcon({
-  size = Size.small,
+export function LensIcon({
+  width,
+  height,
   theme = Theme.default,
   iconBackgroundColor,
   iconForegroundColor,
 }: {
-  size?: Size
+  width?: number
+  height?: number
   theme?: Theme
   iconBackgroundColor?: string
   iconForegroundColor?: string
@@ -19,7 +21,7 @@ export default function LensIcon({
   if (iconForegroundColor) {
     foregroundColor = iconForegroundColor
   }
-  let { width, height } = dimensionsMap[size]
+
   return (
     <svg
       width={width}
