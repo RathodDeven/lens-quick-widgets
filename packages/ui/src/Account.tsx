@@ -29,6 +29,7 @@ import { useFollow } from "./hooks/useFollow"
 import { useUnFollow } from "./hooks/useUnFollow"
 import LoginPopUp from "./LoginPopUp"
 import toast from "react-hot-toast"
+import { useLensWidget } from "./LensWidgetContext"
 
 /**
  * Account Component - Displays a Lens Protocol user profile
@@ -40,7 +41,7 @@ import toast from "react-hot-toast"
  * @param {string} [props.walletAddress] - The wallet address
  * @param {Function} [props.onAccountLoad] - Callback when account loads successfully
  * @param {Function} [props.onError] - Callback when an error occurs
- * @param {Theme} [props.theme=Theme.default] - The theme to use for styling
+ * @param {Theme} [props.theme] - The theme to use for styling
  * @param {React.CSSProperties} [props.containerStyle] - Custom container style
  * @param {React.CSSProperties} [props.followButtonStyle] - Custom follow button style
  * @param {React.CSSProperties} [props.followButtonContainerStyle] - Custom follow button container style
@@ -62,7 +63,7 @@ export const Account = ({
   walletAddress,
   onAccountLoad,
   onError,
-  theme = Theme.default,
+  theme,
   containerStyle,
   followButtonStyle,
   hideFollowButton = false,
@@ -87,9 +88,15 @@ export const Account = ({
   size?: Size
   fontSize?: string
 }) => {
-  const backgroundColor = backgroundColorMap[theme]
-  const accentColor = foregroundColorMap[theme]
-  const textColor = textColorMap[theme]
+  // Get the theme from context to use as fallback
+  const { theme: contextTheme } = useLensWidget()
+
+  // Use provided theme or fall back to context theme
+  const themeToUse = theme || contextTheme
+
+  const backgroundColor = backgroundColorMap[themeToUse]
+  const accentColor = foregroundColorMap[themeToUse]
+  const textColor = textColorMap[themeToUse]
 
   // Determine contrast color based on actual background color
   const contrastTextColor = getContrastColor(backgroundColor)
@@ -1094,6 +1101,7 @@ export const Account = ({
                   handleFollow()
                 }
               }}
+              theme={themeToUse}
             />
           )}
 

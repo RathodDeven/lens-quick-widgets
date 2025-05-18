@@ -12,7 +12,6 @@ const Home = () => {
         <Account
           size={Size.large}
           theme={Theme.peach}
-          hideFollowButton={true}
           localName={'diversehq'}
         />
         <Account size={Size.medium} localName={'rathod'} />
