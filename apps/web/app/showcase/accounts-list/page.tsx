@@ -40,6 +40,7 @@ export default function AccountsListShowcase() {
   const [currentLocalName, setCurrentLocalName] = useState<string>('')
   const [followersOf, setFollowersOf] = useState<string>('')
   const [followingsOf, setFollowingsOf] = useState<string>('')
+  const [managedBy, setManagedBy] = useState<string>('')
   const [orderBy, setOrderBy] = useState<AccountsOrderBy>(
     AccountsOrderBy.BestMatch
   )
@@ -107,6 +108,7 @@ export default function AccountsListShowcase() {
     if (localNames.length > 0) params.append('localNames', localNames.join(','))
     if (followersOf) params.append('followersOf', followersOf)
     if (followingsOf) params.append('followingsOf', followingsOf)
+    if (managedBy) params.append('managedBy', managedBy)
     if (orderBy) params.append('orderBy', orderBy)
     if (followersOrderBy) params.append('followersOrderBy', followersOrderBy)
     if (followingOrderBy) params.append('followingOrderBy', followingOrderBy)
@@ -137,6 +139,7 @@ export default function AccountsListShowcase() {
   ${localNames.length > 0 ? `localNames={[${localNames.map((name) => `"${name}"`).join(', ')}]}` : ''}
   ${followersOf ? `followersOf="${followersOf}"` : ''}
   ${followingsOf ? `followingsOf="${followingsOf}"` : ''}
+  ${managedBy ? `managedBy="${managedBy}"` : ''}
   orderBy={AccountsOrderBy.${Object.keys(AccountsOrderBy).find((key) => AccountsOrderBy[key as keyof typeof AccountsOrderBy] === orderBy)}}
   followersOrderBy={FollowersOrderBy.${Object.keys(FollowersOrderBy).find((key) => FollowersOrderBy[key as keyof typeof FollowersOrderBy] === followersOrderBy)}}
   followingOrderBy={FollowingOrderBy.${Object.keys(FollowingOrderBy).find((key) => FollowingOrderBy[key as keyof typeof FollowingOrderBy] === followingOrderBy)}}
@@ -239,6 +242,7 @@ export default function AccountsListShowcase() {
                       setLocalNames([])
                       setFollowersOf('')
                       setFollowingsOf('')
+                      setManagedBy('')
                     }}
                     helperText="Search for accounts by name or handle"
                   />
@@ -280,6 +284,7 @@ export default function AccountsListShowcase() {
                       setSearchQuery('')
                       setLocalNames([])
                       setFollowingsOf('')
+                      setManagedBy('')
                     }}
                     helperText="Show followers of a specific handle"
                   />
@@ -295,8 +300,25 @@ export default function AccountsListShowcase() {
                       setSearchQuery('')
                       setLocalNames([])
                       setFollowersOf('')
+                      setManagedBy('')
                     }}
                     helperText="Show accounts followed by a specific handle"
+                  />
+
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Managed By"
+                    value={managedBy}
+                    onChange={(e) => {
+                      setManagedBy(e.target.value)
+                      // Clear other search options
+                      setSearchQuery('')
+                      setLocalNames([])
+                      setFollowersOf('')
+                      setFollowingsOf('')
+                    }}
+                    helperText="Show accounts managed by a specific address"
                   />
                 </Box>
 
@@ -326,55 +348,47 @@ export default function AccountsListShowcase() {
                     </Select>
                   </FormControl>
 
-                  {followersOf && (
-                    <FormControl fullWidth margin="normal">
-                      <InputLabel>Followers Order By</InputLabel>
-                      <Select
-                        value={followersOrderBy}
-                        label="Followers Order By"
-                        onChange={(e) =>
-                          setFollowersOrderBy(
-                            e.target.value as FollowersOrderBy
-                          )
-                        }
-                      >
-                        <MenuItem value={FollowersOrderBy.AccountScore}>
-                          Account Score
-                        </MenuItem>
-                        <MenuItem value={FollowersOrderBy.Asc}>
-                          Ascending
-                        </MenuItem>
-                        <MenuItem value={FollowersOrderBy.Desc}>
-                          Descending
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  )}
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel>Followers Order By</InputLabel>
+                    <Select
+                      value={followersOrderBy}
+                      label="Followers Order By"
+                      onChange={(e) =>
+                        setFollowersOrderBy(e.target.value as FollowersOrderBy)
+                      }
+                    >
+                      <MenuItem value={FollowersOrderBy.AccountScore}>
+                        Account Score
+                      </MenuItem>
+                      <MenuItem value={FollowersOrderBy.Asc}>
+                        Ascending
+                      </MenuItem>
+                      <MenuItem value={FollowersOrderBy.Desc}>
+                        Descending
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
 
-                  {followingsOf && (
-                    <FormControl fullWidth margin="normal">
-                      <InputLabel>Following Order By</InputLabel>
-                      <Select
-                        value={followingOrderBy}
-                        label="Following Order By"
-                        onChange={(e) =>
-                          setFollowingOrderBy(
-                            e.target.value as FollowingOrderBy
-                          )
-                        }
-                      >
-                        <MenuItem value={FollowingOrderBy.AccountScore}>
-                          Account Score
-                        </MenuItem>
-                        <MenuItem value={FollowingOrderBy.Asc}>
-                          Ascending
-                        </MenuItem>
-                        <MenuItem value={FollowingOrderBy.Desc}>
-                          Descending
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  )}
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel>Following Order By</InputLabel>
+                    <Select
+                      value={followingOrderBy}
+                      label="Following Order By"
+                      onChange={(e) =>
+                        setFollowingOrderBy(e.target.value as FollowingOrderBy)
+                      }
+                    >
+                      <MenuItem value={FollowingOrderBy.AccountScore}>
+                        Account Score
+                      </MenuItem>
+                      <MenuItem value={FollowingOrderBy.Asc}>
+                        Ascending
+                      </MenuItem>
+                      <MenuItem value={FollowingOrderBy.Desc}>
+                        Descending
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
                 </Box>
 
                 <Box mt={3}>
@@ -464,6 +478,7 @@ export default function AccountsListShowcase() {
                     localNames={localNames.length > 0 ? localNames : undefined}
                     followersOf={followersOf || undefined}
                     followingsOf={followingsOf || undefined}
+                    managedBy={managedBy || undefined}
                     orderBy={orderBy}
                     followersOrderBy={followersOrderBy}
                     followingOrderBy={followingOrderBy}

@@ -8,6 +8,7 @@ export default function AccountEmbed() {
 
   // Extract parameters from URL with null check
   const localName = searchParams?.get('localName') || 'stani'
+  const accountAddress = searchParams?.get('accountAddress') || undefined
   const theme = (searchParams?.get('theme') as Theme) || Theme.light
   const size = (searchParams?.get('size') as Size) || Size.medium
   const hideFollowButton = searchParams?.get('hideFollowButton') === 'true'
@@ -35,6 +36,7 @@ export default function AccountEmbed() {
   return (
     <Account
       localName={localName}
+      accountAddress={accountAddress}
       theme={theme}
       size={size}
       hideFollowButton={hideFollowButton}

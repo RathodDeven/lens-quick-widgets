@@ -27,6 +27,7 @@ export default function AccountsListEmbed() {
 
   const followersOf = searchParams?.get('followersOf') || undefined
   const followingsOf = searchParams?.get('followingsOf') || undefined
+  const managedBy = searchParams?.get('managedBy') || undefined
 
   // Parse orderBy parameters
   const orderBy =
@@ -61,6 +62,7 @@ export default function AccountsListEmbed() {
       localNames={localNames}
       followersOf={followersOf}
       followingsOf={followingsOf}
+      managedBy={managedBy}
       orderBy={orderBy}
       followersOrderBy={followersOrderBy}
       followingOrderBy={followingOrderBy}

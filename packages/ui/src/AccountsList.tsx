@@ -84,7 +84,28 @@ export const AccountsList: React.FC<AccountsListProps> = ({
   const [nextCursor, setNextCursor] = useState<string | null>(null)
   const observerTarget = useRef<HTMLDivElement>(null)
 
-  console.log("accounts", accounts)
+  // Reset accounts when filter parameters change
+  useEffect(() => {
+    // Reset accounts, cursor and loading state
+    setAccounts([])
+    setCursor(null)
+    setNextCursor(null)
+    setHasMore(true)
+    setIsLoading(false)
+  }, [
+    // Add all filter parameters as dependencies
+    searchBy,
+    JSON.stringify(addresses),
+    JSON.stringify(ownedBy),
+    JSON.stringify(localNames),
+    managedBy,
+    followersOf,
+    followingsOf,
+    pageSize,
+    orderBy,
+    followersOrderBy,
+    followingOrderBy,
+  ])
 
   // Get follower/following account address from handle if provided
   const { data: followerAccount } = useAccount({

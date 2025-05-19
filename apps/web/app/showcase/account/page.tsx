@@ -24,6 +24,7 @@ export default function AccountShowcase() {
   const [theme, setTheme] = useState<Theme>(Theme.light)
   const [size, setSize] = useState<Size>(Size.medium)
   const [localName, setLocalName] = useState<string>('stani')
+  const [accountAddress, setAccountAddress] = useState<string>('')
   const [hideFollowButton, setHideFollowButton] = useState<boolean>(false)
   const [showUnfollowButton, setShowUnfollowButton] = useState<boolean>(false)
   const [fontSize, setFontSize] = useState<string>('')
@@ -76,6 +77,7 @@ export default function AccountShowcase() {
     let params = new URLSearchParams()
 
     params.append('localName', localName)
+    if (accountAddress) params.append('accountAddress', accountAddress)
     if (theme) params.append('theme', theme)
     if (size) params.append('size', size)
     if (hideFollowButton) params.append('hideFollowButton', 'true')
@@ -99,6 +101,7 @@ export default function AccountShowcase() {
 
 <Account 
   localName="${localName}"
+  ${accountAddress ? `accountAddress="${accountAddress}"` : ''}
   theme={Theme.${Theme[theme]}}
   size={Size.${Size[size]}}
   ${hideFollowButton ? 'hideFollowButton={true}' : ''}
@@ -148,6 +151,15 @@ export default function AccountShowcase() {
                   value={localName}
                   onChange={(e) => setLocalName(e.target.value)}
                   helperText="Enter a Lens handle (without @)"
+                />
+
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Account Address"
+                  value={accountAddress}
+                  onChange={(e) => setAccountAddress(e.target.value)}
+                  helperText="Enter an Ethereum address (overrides Lens handle if both provided)"
                 />
 
                 <FormControl fullWidth margin="normal">
@@ -277,6 +289,7 @@ export default function AccountShowcase() {
                 <Box className="flex justify-center">
                   <Account
                     localName={localName}
+                    accountAddress={accountAddress || undefined}
                     theme={theme}
                     size={size}
                     hideFollowButton={hideFollowButton}
