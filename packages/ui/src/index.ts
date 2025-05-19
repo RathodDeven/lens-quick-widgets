@@ -19,15 +19,7 @@ export * from "./Player"
 export * from "./PostsList"
 export * from "./AccountsList"
 
-// Re-export types and enums from @lens-protocol/react
-export type {
-  Account as AccountType,
-  AnyPost,
-  Post as PostType,
-  EvmAddress,
-  PostId,
-} from "@lens-protocol/react"
-
+// Export needed items from @lens-protocol/react (instead of everything)
 export {
   AccountsOrderBy,
   FollowersOrderBy,
@@ -38,7 +30,15 @@ export {
   PostReferenceType,
   PostReactionType,
   PostType as LensPostType,
+  // Add any other specific exports you need from @lens-protocol/react
 } from "@lens-protocol/react"
+
+// Re-export specific items with renames to avoid conflicts
+export type { Account as AccountType } from "@lens-protocol/react"
+export type { Post as PostType } from "@lens-protocol/react"
+export type { PostId, EvmAddress } from "@lens-protocol/react"
+
+export * as LensProtocolReact from "@lens-protocol/react"
 
 // Re-export our own types
 export * from "./types"

@@ -77,10 +77,10 @@ export default function Page() {
   }
 
   // JSX code for the component
-  const componentCode = `import { SignInWithLens } from "lens-quick-widgets"
+  const componentCode = `import { SignInWithLens, Theme } from "lens-quick-widgets"
 
 <SignInWithLens 
-  theme="${theme}"
+  theme={Theme.${Object.keys(Theme).find((k) => Theme[k as keyof typeof Theme] === theme)}}
   onConnectWallet={(address) => console.log("Wallet connected:", address)}
   onLogin={(account) => console.log("Logged in:", account)}
   onLogout={() => console.log("Logged out")}

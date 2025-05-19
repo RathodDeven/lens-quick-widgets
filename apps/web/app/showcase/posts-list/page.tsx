@@ -21,12 +21,15 @@ import {
   Divider
 } from '@mui/material'
 import {
+  ContentWarning,
   EvmAddress,
+  LensPostType,
   MainContentFocus,
   PageSize,
   PostId,
   PostsList,
-  Theme
+  Theme,
+  LensProtocolReact
 } from 'lens-quick-widgets'
 import { APP_LINK } from '@/src/utils/config'
 
@@ -59,11 +62,13 @@ export default function PostsListShowcase() {
   const [useAccountScore, setUseAccountScore] = useState<string>('none')
   const [apps, setApps] = useState<string>('')
   const [authors, setAuthors] = useState<string>('')
-  const [contentWarnings, setContentWarnings] = useState<string[]>([])
+  const [contentWarnings, setContentWarnings] = useState<ContentWarning[]>([])
   const [tags, setTags] = useState<string>('')
-  const [mainContentFocus, setMainContentFocus] = useState<string[]>([])
+  const [mainContentFocus, setMainContentFocus] = useState<MainContentFocus[]>(
+    []
+  )
   const [postIds, setPostIds] = useState<string>('')
-  const [postTypes, setPostTypes] = useState<string[]>([])
+  const [postTypes, setPostTypes] = useState<LensPostType[]>([])
 
   // Style customization
   const [containerStyleJSON, setContainerStyleJSON] = useState<string>('{}')
@@ -125,25 +130,25 @@ export default function PostsListShowcase() {
   ]
 
   const availableContentWarnings = [
-    { value: 'NSFW', label: 'NSFW' },
-    { value: 'SENSITIVE', label: 'Sensitive' },
-    { value: 'SPOILER', label: 'Spoiler' }
+    { value: ContentWarning.Nsfw, label: 'NSFW' },
+    { value: ContentWarning.Sensitive, label: 'Sensitive' },
+    { value: ContentWarning.Spoiler, label: 'Spoiler' }
   ]
 
   const availableContentFocus = [
-    { value: 'IMAGE', label: 'Image' },
-    { value: 'VIDEO', label: 'Video' },
-    { value: 'ARTICLE', label: 'Article' },
-    { value: 'TEXT_ONLY', label: 'Text Only' },
-    { value: 'AUDIO', label: 'Audio' },
-    { value: 'LIVESTREAM', label: 'Livestream' }
+    { value: MainContentFocus.Image, label: 'Image' },
+    { value: MainContentFocus.Video, label: 'Video' },
+    { value: MainContentFocus.Article, label: 'Article' },
+    { value: MainContentFocus.TextOnly, label: 'Text Only' },
+    { value: MainContentFocus.Audio, label: 'Audio' },
+    { value: MainContentFocus.Livestream, label: 'Livestream' }
   ]
 
   const availablePostTypes = [
-    { value: 'POST', label: 'Post' },
-    { value: 'COMMENT', label: 'Comment' },
-    { value: 'MIRROR', label: 'Mirror' },
-    { value: 'QUOTE', label: 'Quote' }
+    { value: LensPostType.Root, label: 'Post' },
+    { value: LensPostType.Comment, label: 'Comment' },
+    { value: LensPostType.Repost, label: 'Repost' },
+    { value: LensPostType.Quote, label: 'Quote' }
   ]
 
   // Function to generate iframe code
@@ -266,11 +271,11 @@ export default function PostsListShowcase() {
   }
 
   // JSX code for the component
-  const componentCode = `import { PostsList, PageSize, Theme } from "lens-quick-widgets"
+  const componentCode = `import { PostsList, PageSize, Theme, LensPostType, ContentWarning, MainContentFocus } from "lens-quick-widgets"
 
 <PostsList 
-  theme="${theme}"
-  pageSize={PageSize.${Object.keys(PageSize).find((key) => PageSize[key as keyof typeof PageSize] === pageSize)}}
+  theme={Theme.${Object.keys(Theme).find((k) => Theme[k as keyof typeof Theme] === theme)}}
+  pageSize={PageSize.${Object.keys(PageSize).find((k) => PageSize[k as keyof typeof PageSize] === pageSize)}}
   ${searchQuery ? `searchQuery="${searchQuery}"` : ''}
   ${postsOf ? `postsOf="${postsOf}"` : ''}
   widthOfPostCard="${widthOfPostCard}"
@@ -296,7 +301,22 @@ export default function PostsListShowcase() {
           .join(', ')}]}`
       : ''
   }
-  ${getMetadata() ? `metadata={${JSON.stringify(getMetadata(), null, 2)}}` : ''}
+  ${
+    getMetadata()
+      ? `metadata={{
+    ${contentWarnings.length > 0 ? `contentWarning: { oneOf: [${contentWarnings.map((warning) => `ContentWarning.${Object.keys(ContentWarning).find((k) => ContentWarning[k as keyof typeof ContentWarning] === warning)}`).join(', ')}] },` : ''}
+    ${
+      tags
+        ? `tags: { oneOf: [${tags
+            .split(',')
+            .map((tag) => `"${tag.trim()}"`)
+            .join(', ')}] },`
+        : ''
+    }
+    ${mainContentFocus.length > 0 ? `mainContentFocus: [${mainContentFocus.map((focus) => `MainContentFocus.${Object.keys(MainContentFocus).find((k) => MainContentFocus[k as keyof typeof MainContentFocus] === focus)}`).join(', ')}]` : ''}
+  }}`
+      : ''
+  }
   ${
     postIds
       ? `posts={[${parsePostIds(postIds)
@@ -304,7 +324,7 @@ export default function PostsListShowcase() {
           .join(', ')}]}`
       : ''
   }
-  ${postTypes.length > 0 ? `postTypes={[${postTypes.map((type) => `"${type}"`).join(', ')}]}` : ''}
+  ${postTypes.length > 0 ? `postTypes={[${postTypes.map((type) => `LensPostType.${Object.keys(LensPostType).find((k) => LensPostType[k as keyof typeof LensPostType] === type)}`).join(', ')}]}` : ''}
   ${containerStyleJSON !== '{}' ? `containerStyle={${containerStyleJSON}}` : ''}
   ${postStyleJSON !== '{}' ? `postStyle={${postStyleJSON}}` : ''}
   ${postContainerStyleJSON !== '{}' ? `postContainerStyle={${postContainerStyleJSON}}` : ''}
@@ -789,9 +809,7 @@ export default function PostsListShowcase() {
                     }
                     metadata={getMetadata()}
                     posts={parsePostIds(postIds) as PostId[] | null | undefined}
-                    postTypes={
-                      postTypes.length > 0 ? (postTypes as any) : undefined
-                    }
+                    postTypes={postTypes.length > 0 ? postTypes : undefined}
                     containerStyle={parseStyle(containerStyleJSON)}
                     postStyle={parseStyle(postStyleJSON)}
                     postContainerStyle={parseStyle(postContainerStyleJSON)}

@@ -131,11 +131,11 @@ const page = () => {
   }
 
   // JSX code for the component
-  const componentCode = `import { Post } from "lens-quick-widgets"
+  const componentCode = `import { Post, Theme } from "lens-quick-widgets"
 
 <Post 
   postId="${postId}"
-  theme="${theme}"
+  theme={Theme.${Object.keys(Theme).find((k) => Theme[k as keyof typeof Theme] === theme)}}
   ${hideInteractions ? 'hideInteractions={true}' : ''}
   showStats={${showStats}}
   showFollow={${showFollow}}

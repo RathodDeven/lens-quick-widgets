@@ -14,21 +14,13 @@ const page = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen w-full">
       <div className="w-[500px] h-[800px] overflow-auto">
-        <PostsList
-          theme={Theme.default}
-          pageSize={PageSize.Ten}
-          postsOf="stani"
-          widthOfPostCard="100%"
-          showStats={true}
-          showFollow={true}
-          showUnfollowButton={false}
-          contentPreviewLimit={400}
-          visibleStats={['upvotes', 'comments', 'reposts']}
-          visibleButtons={['like', 'repost', 'comment']}
-          postTypes={[LensPostType.Comment]}
-          onPostClick={(post) => console.log('Post clicked:', post.id)}
-          onLike={(post) => console.log('Post liked:', post.id)}
-          onRepost={(post) => console.log('Post reposted:', post.id)}
+        <SignInWithLens
+          theme={Theme.green}
+          onConnectWallet={(address) =>
+            console.log('Wallet connected:', address)
+          }
+          onLogin={(account) => console.log('Logged in:', account)}
+          onLogout={() => console.log('Logged out')}
         />
       </div>
     </div>
