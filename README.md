@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./apps/web/public/android-chrome-512x512.png" alt="Lens Quick Widgets Logo" width="200"/>
+  <img src="https://lens-quick-widgets-web.vercel.app/android-chrome-192x192.png" alt="Lens Quick Widgets Logo" width="200"/>
 </p>
 
 # Lens Quick Widgets

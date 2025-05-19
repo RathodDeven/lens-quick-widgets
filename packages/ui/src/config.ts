@@ -3,7 +3,7 @@ export const COVER_IMAGE_PLACE_HOLDER =
 
 // Add the application address for Lens authentication
 export const LENS_WIDGET_APP_ADDRESS =
-  "0x5eD76435f79E025Ca5c534e17184FEC29b681DB5" // Replace with your actual app address
+  "0x5CEDAE4C8f9b78beC3A8EAb63152C85704312C27"
 
 export const LENS_WIDGET_APP_ADDRESS_TESTNET =
-  "0x0f6c48a220ddC674662D53340FE1fF0653CC7e4f"
+  "0x7789216b0e55bDB38206f167cA5bd80923f01351"

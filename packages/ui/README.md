@@ -3,7 +3,7 @@
 A comprehensive React component library for building applications with [Lens Protocol](https://lens.xyz/). This package provides ready-to-use UI components to streamline your development process.
 
 <p align="center">
-  <img src="../../apps/web/public/android-chrome-512x512.png" alt="Lens Quick Widgets Logo" width="150"/>
+  <img src="https://lens-quick-widgets-web.vercel.app/android-chrome-192x192.png" alt="Lens Quick Widgets Logo" width="150"/>
 </p>
 
 ## Table of Contents
