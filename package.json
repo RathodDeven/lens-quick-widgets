@@ -11,8 +11,8 @@
     "dev": "pnpm -r run dev",
     "build": "pnpm -r run build",
     "clean": "pnpm -r run clean",
-    "build:ui": "pnpm --filter @lens-quick-widgets/ui run build",
-    "dev:ui": "pnpm --filter @lens-quick-widgets/ui run dev",
+    "build:ui": "pnpm --filter lens-quick-widgets run build",
+    "dev:ui": "pnpm --filter lens-quick-widgets run dev",
     "dev:web": "pnpm --filter web run dev"
   }
 }

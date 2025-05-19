@@ -16,7 +16,7 @@ import {
   Switch,
   FormControlLabel
 } from '@mui/material'
-import { Account, Theme, Size } from '@lens-quick-widgets/ui'
+import { Account, Theme, Size } from 'lens-quick-widgets'
 import { APP_LINK } from '@/src/utils/config'
 
 export default function AccountShowcase() {
@@ -97,7 +97,7 @@ export default function AccountShowcase() {
   }
 
   // JSX code for the component
-  const componentCode = `import { Account, Theme, Size } from "@lens-quick-widgets/ui"
+  const componentCode = `import { Account, Theme, Size } from "lens-quick-widgets"
 
 <Account 
   localName="${localName}"

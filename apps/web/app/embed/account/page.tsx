@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { Account, Theme, Size } from '@lens-quick-widgets/ui'
+import { Account, Theme, Size } from 'lens-quick-widgets'
 
 export default function AccountEmbed() {
   const searchParams = useSearchParams()

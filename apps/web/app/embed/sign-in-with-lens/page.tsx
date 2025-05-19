@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { SignInWithLens, Theme } from '@lens-quick-widgets/ui'
+import { SignInWithLens, Theme } from 'lens-quick-widgets'
 
 export default function SignInWithLensEmbed() {
   const searchParams = useSearchParams()

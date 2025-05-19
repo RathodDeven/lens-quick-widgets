@@ -18,7 +18,7 @@ import {
   Chip,
   Stack
 } from '@mui/material'
-import { Post, Theme } from '@lens-quick-widgets/ui'
+import { Post, Theme } from 'lens-quick-widgets'
 import { APP_LINK, EXAMPLE_POST_ID } from '@/src/utils/config'
 
 const page = () => {
@@ -131,7 +131,7 @@ const page = () => {
   }
 
   // JSX code for the component
-  const componentCode = `import { Post } from "@lens-quick-widgets/ui"
+  const componentCode = `import { Post } from "lens-quick-widgets"
 
 <Post 
   postId="${postId}"

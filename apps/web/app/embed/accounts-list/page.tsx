@@ -9,7 +9,7 @@ import {
   FollowingOrderBy,
   Theme,
   Size
-} from '@lens-quick-widgets/ui'
+} from 'lens-quick-widgets'
 
 export default function AccountsListEmbed() {
   const searchParams = useSearchParams()

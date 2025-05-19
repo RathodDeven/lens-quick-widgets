@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { Post, Theme } from '@lens-quick-widgets/ui'
+import { Post, Theme } from 'lens-quick-widgets'
 
 export default function PostEmbed() {
   const searchParams = useSearchParams()

@@ -16,7 +16,7 @@ import {
   Switch,
   FormControlLabel
 } from '@mui/material'
-import { SignInWithLens, Theme } from '@lens-quick-widgets/ui'
+import { SignInWithLens, Theme } from 'lens-quick-widgets'
 import { APP_LINK } from '@/src/utils/config'
 
 export default function Page() {
@@ -77,7 +77,7 @@ export default function Page() {
   }
 
   // JSX code for the component
-  const componentCode = `import { SignInWithLens } from "@lens-quick-widgets/ui"
+  const componentCode = `import { SignInWithLens } from "lens-quick-widgets"
 
 <SignInWithLens 
   theme="${theme}"

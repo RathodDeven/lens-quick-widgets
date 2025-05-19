@@ -27,7 +27,7 @@ import {
   FollowingOrderBy,
   Theme,
   Size
-} from '@lens-quick-widgets/ui'
+} from 'lens-quick-widgets'
 import { APP_LINK } from '@/src/utils/config'
 
 export default function AccountsListShowcase() {
@@ -129,7 +129,7 @@ export default function AccountsListShowcase() {
   }
 
   // JSX code for the component
-  const componentCode = `import { AccountsList, PageSize, AccountsOrderBy, FollowersOrderBy, FollowingOrderBy, Theme, Size } from "@lens-quick-widgets/ui"
+  const componentCode = `import { AccountsList, PageSize, AccountsOrderBy, FollowersOrderBy, FollowingOrderBy, Theme, Size } from "lens-quick-widgets"
 
 <AccountsList 
   theme={Theme.${Theme[theme]}}

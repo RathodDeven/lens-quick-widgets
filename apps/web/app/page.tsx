@@ -21,6 +21,7 @@ import {
   FaPalette,
   FaCode
 } from 'react-icons/fa'
+import { GITHUB_LINK, NPM_PACKAGE_LINK } from '../src/utils/config'
 
 export default function Home() {
   const containerVariants = {
@@ -136,7 +137,7 @@ export default function Home() {
               color="primary"
               size="large"
               component="a"
-              href="https://github.com/yourusername/lens-quick-widgets"
+              href={GITHUB_LINK}
               target="_blank"
             >
               GitHub
@@ -145,7 +146,7 @@ export default function Home() {
               variant="outlined"
               size="large"
               component="a"
-              href="https://www.npmjs.com/package/@lens-quick-widgets/ui"
+              href={NPM_PACKAGE_LINK}
               target="_blank"
             >
               NPM Package

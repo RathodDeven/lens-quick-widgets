@@ -3,7 +3,7 @@ import React from 'react'
 import { getDefaultConfig } from 'connectkit'
 import { createConfig, http, WagmiProvider } from 'wagmi'
 import { lens } from 'wagmi/chains'
-import { LensWidgetProvider } from '@lens-quick-widgets/ui'
+import { LensWidgetProvider } from 'lens-quick-widgets'
 
 const config = createConfig(
   getDefaultConfig({

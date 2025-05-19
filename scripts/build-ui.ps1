@@ -1,10 +1,10 @@
 # Build and prepare the UI package for distribution
 
 # First, clean the dist directory
-pnpm --filter @lens-quick-widgets/ui run clean
+pnpm --filter lens-quick-widgets run clean
 
 # Build the package
-pnpm --filter @lens-quick-widgets/ui run build
+pnpm --filter lens-quick-widgets run build
 
 # Output success message
 Write-Host "UI package built successfully in the packages/ui/dist directory"

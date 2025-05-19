@@ -5,8 +5,8 @@ import { IconButton } from '@mui/material'
 import LightModeIcon from '@mui/icons-material/LightMode'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
 
-import { SignInWithLens } from '@lens-quick-widgets/ui'
-import { Theme } from '@lens-quick-widgets/ui/dist/types'
+import { SignInWithLens } from 'lens-quick-widgets'
+import { Theme } from 'lens-quick-widgets/dist/types'
 
 const TopHeader = () => {
   const { theme, toggleTheme } = useTheme()

@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { PostsList, PageSize, Theme } from '@lens-quick-widgets/ui'
+import { PostsList, PageSize, Theme } from 'lens-quick-widgets'
 
 export default function PostsListEmbed() {
   const searchParams = useSearchParams()

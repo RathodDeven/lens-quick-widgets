@@ -27,7 +27,7 @@ import {
   PostId,
   PostsList,
   Theme
-} from '@lens-quick-widgets/ui'
+} from 'lens-quick-widgets'
 import { APP_LINK } from '@/src/utils/config'
 
 export default function PostsListShowcase() {
@@ -266,7 +266,7 @@ export default function PostsListShowcase() {
   }
 
   // JSX code for the component
-  const componentCode = `import { PostsList, PageSize, Theme } from "@lens-quick-widgets/ui"
+  const componentCode = `import { PostsList, PageSize, Theme } from "lens-quick-widgets"
 
 <PostsList 
   theme="${theme}"
