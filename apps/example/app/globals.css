@@ -1,0 +1,167 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .centered-row {
+    @apply flex flex-row items-center justify-center;
+  }
+
+  .centered-col {
+    @apply flex flex-col items-center justify-center;
+  }
+
+  .start-center-row {
+    @apply flex flex-row items-center justify-start;
+  }
+
+  .start-row {
+    @apply flex flex-row items-start justify-start;
+  }
+
+  .between-row {
+    @apply flex flex-row items-center justify-between;
+  }
+
+  .between-col {
+    @apply flex flex-col justify-between;
+  }
+
+  .start-col {
+    @apply flex flex-col;
+  }
+
+  .end-col {
+    @apply flex flex-col items-end;
+  }
+
+  .centered {
+    @apply flex flex-col items-center justify-center w-full h-full;
+  }
+
+  .spinner {
+    @apply animate-spin rounded-full h-5 w-5 border border-t-2 border-r-2;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+}
+
+@layer utilities {
+  .image-unselectable {
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 20px;
+    background: var(--background);
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* @media (prefers-color-scheme: light) {
+    ::-webkit-scrollbar-track {
+      background: #1a1a1b;
+    }
+  } */
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #757372;
+    border-radius: 30px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #757372;
+  }
+
+  /* Disable blue highlight on touch for all elements */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* here we are removing default styling added by nextjs */
+
+  /* Remove default button styles */
+  button {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  /* Remove link underline and color */
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Remove default styles for inputs */
+  input {
+    padding: 0;
+    background: none;
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  textarea {
+    padding: 0;
+    background: none;
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+  }
+}
+
+/* Add transparent background rule for embed pages */
+.embed-container {
+  background: transparent !important;
+}
+
+/* Add specific override for embed pages */
+[data-pathname^='/embed'] body,
+[data-pathname^='/embed'] html {
+  background: transparent !important;
+}
+
+:root {
+  /* background */
+  --primary-background: #ebebeb;
+  --secondary-background: #ffffff;
+
+  /* text */
+  --primary-text: #000000;
+  --secondary-text: #807b7b;
+}
+
+[data-theme='dark'] {
+  /* background */
+  --primary-background: #000000;
+  --secondary-background: #2c2c2c;
+
+  /* text */
+  --primary-text: #ffffff;
+  --secondary-text: #a7a7a7;
+}

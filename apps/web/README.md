@@ -34,6 +34,8 @@ cd lens-beauty-widgets/apps/web
 yarn install
 ```
 
+Note: The example app already includes `wagmi` and `connectkit` as dependencies, which are required for `lens-quick-widgets` to function properly.
+
 ### Environment Variables
 
 Create a `.env.local` file with the following:

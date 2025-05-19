@@ -24,12 +24,14 @@ A comprehensive React component library for building applications with [Lens Pro
 ## Installation
 
 ```bash
-# Install the package
-npm install lens-quick-widgets
+# Install the package along with required dependencies
+npm install lens-quick-widgets wagmi connectkit
 
 # Or using yarn
-yarn add lens-quick-widgets
+yarn add lens-quick-widgets wagmi connectkit
 ```
+
+Note: `lens-quick-widgets` requires both `wagmi` and `connectkit` as peer dependencies for wallet connection and authentication.
 
 ## Provider Setup
 

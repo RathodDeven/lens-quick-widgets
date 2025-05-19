@@ -25,12 +25,14 @@ This repository contains two main packages:
 ### Installation
 
 ```bash
-# Install the package in your React project
-npm install lens-quick-widgets
+# Install the package in your React project along with required dependencies
+npm install lens-quick-widgets wagmi connectkit
 
 # Or using yarn
-yarn add lens-quick-widgets
+yarn add lens-quick-widgets wagmi connectkit
 ```
+
+Note: `lens-quick-widgets` requires both `wagmi` and `connectkit` as peer dependencies.
 
 ### Basic Setup
 
@@ -38,13 +40,32 @@ Wrap your application with the `LensWidgetProvider` to provide Lens Protocol aut
 
 ```jsx
 import { LensWidgetProvider, Theme } from "lens-quick-widgets"
+import { createConfig, http, WagmiProvider } from "wagmi"
+import { lens } from "wagmi/chains"
+import { getDefaultConfig } from "connectkit"
+
+// Configure Wagmi (required for Lens authentication)
+const config = createConfig(
+  getDefaultConfig({
+    chains: [lens],
+    transports: {
+      [lens.id]: http(
+        `https://eth-mainnet.g.alchemy.com/v2/${YOUR_ALCHEMY_ID}`
+      ),
+    },
+    walletConnectProjectId: YOUR_WALLET_CONNECT_PROJECT_ID,
+    appName: "Your App Name",
+  })
+)
 
 // In your app root
 const App = () => {
   return (
-    <LensWidgetProvider defaultTheme={Theme.light} isTestnet={false}>
-      {/* Your application components */}
-    </LensWidgetProvider>
+    <WagmiProvider config={config}>
+      <LensWidgetProvider defaultTheme={Theme.light} isTestnet={false}>
+        {/* Your application components */}
+      </LensWidgetProvider>
+    </WagmiProvider>
   )
 }
 ```
