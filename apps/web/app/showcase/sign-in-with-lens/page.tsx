@@ -17,6 +17,7 @@ import {
   FormControlLabel
 } from '@mui/material'
 import { SignInWithLens, Theme } from '@lens-quick-widgets/ui'
+import { APP_LINK } from '@/src/utils/config'
 
 export default function Page() {
   // State for component props
@@ -63,8 +64,12 @@ export default function Page() {
 
   // Function to generate iframe code
   const generateIframeCode = () => {
+    // Safely access window.location.origin for browser environments only
+    const baseUrl =
+      typeof window !== 'undefined' ? window.location.origin : APP_LINK
+
     return `<iframe 
-  src="${window.location.origin}/embed/sign-in-with-lens?theme=${theme}" 
+  src="${baseUrl}/embed/sign-in-with-lens?theme=${theme}" 
   width="100%" 
   height="100px" 
   frameborder="0">

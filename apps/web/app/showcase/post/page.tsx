@@ -19,7 +19,7 @@ import {
   Stack
 } from '@mui/material'
 import { Post, Theme } from '@lens-quick-widgets/ui'
-import { EXAMPLE_POST_ID } from '@/src/utils/config'
+import { APP_LINK, EXAMPLE_POST_ID } from '@/src/utils/config'
 
 const page = () => {
   // State for component props
@@ -118,8 +118,12 @@ const page = () => {
     if (visibleButtons.length > 0)
       params.append('visibleButtons', visibleButtons.join(','))
 
+    // Safely access window.location.origin for browser environments only
+    const baseUrl =
+      typeof window !== 'undefined' ? window.location.origin : APP_LINK // Replace with your actual domain in production
+
     return `<iframe 
-  src="${window.location.origin}/embed/post?${params.toString()}" 
+  src="${baseUrl}/embed/post?${params.toString()}" 
   width="100%" 
   height="auto" 
   frameborder="0">

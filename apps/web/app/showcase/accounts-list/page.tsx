@@ -28,6 +28,7 @@ import {
   Theme,
   Size
 } from '@lens-quick-widgets/ui'
+import { APP_LINK } from '@/src/utils/config'
 
 export default function AccountsListShowcase() {
   // State for component props
@@ -113,8 +114,12 @@ export default function AccountsListShowcase() {
     if (showUnfollowButton) params.append('showUnfollowButton', 'true')
     if (fontSize) params.append('fontSize', fontSize)
 
+    // Safely access window.location.origin for browser environments only
+    const baseUrl =
+      typeof window !== 'undefined' ? window.location.origin : APP_LINK
+
     return `<iframe 
-  src="${window.location.origin}/embed/accounts-list?${params.toString()}" 
+  src="${baseUrl}/embed/accounts-list?${params.toString()}" 
   width="100%" 
   height="600px" 
   frameborder="0">

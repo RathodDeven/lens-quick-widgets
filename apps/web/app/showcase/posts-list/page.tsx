@@ -20,6 +20,7 @@ import {
   Stack
 } from '@mui/material'
 import { PageSize, PostsList, Theme } from '@lens-quick-widgets/ui'
+import { APP_LINK } from '@/src/utils/config'
 
 export default function PostsListShowcase() {
   // State for component props
@@ -113,8 +114,12 @@ export default function PostsListShowcase() {
     if (contentPreviewLimit !== 400)
       params.append('previewLimit', contentPreviewLimit.toString())
 
+    // Safely access window.location.origin for browser environments only
+    const baseUrl =
+      typeof window !== 'undefined' ? window.location.origin : APP_LINK
+
     return `<iframe 
-  src="${window.location.origin}/embed/posts-list?${params.toString()}" 
+  src="${baseUrl}/embed/posts-list?${params.toString()}" 
   width="100%" 
   height="800px" 
   frameborder="0">
