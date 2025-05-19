@@ -39,6 +39,6 @@ export type { Post as PostType } from "@lens-protocol/react"
 export type { PostId, EvmAddress } from "@lens-protocol/react"
 
 export * as LensProtocolReact from "@lens-protocol/react"
-
+export * as LensProtocolActions from "@lens-protocol/client/actions"
 // Re-export our own types
 export * from "./types"

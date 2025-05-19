@@ -412,50 +412,87 @@ You can track this flow with the provided callbacks:
 
 ### Accessing Lens Protocol React API
 
-This library re-exports the complete `@lens-protocol/react` library as `LensProtocolReact`, allowing you to access any hooks, functions, or types from the original library:
+This library re-exports the complete `@lens-protocol/react` library as `LensProtocolReact` and the client actions as `LensProtocolActions`, allowing you to access any hooks, functions, or types from the original libraries:
 
 ```jsx
-import { LensProtocolReact } from "lens-quick-widgets"
+import { LensProtocolReact, LensProtocolActions } from "lens-quick-widgets"
+import { useState, useEffect } from "react"
 
-function MyComponent() {
-  // Access any hook from the original library
-  const { data: session } = LensProtocolReact.useSession()
-  const { execute: logout } = LensProtocolReact.useLogout()
-  const { data: sessionClient } = LensProtocolReact.useSessionClient()
+function CustomAccountStatsFetcher({ localName }) {
+  // Access hooks from the Lens Protocol library
+  const { currentSession } = LensProtocolReact.usePublicClient()
 
-  // Example: Using session client to perform actions
-  const handleCustomAction = async () => {
-    if (sessionClient) {
-      // Access full Lens Protocol API functionality
-      const profiles = await sessionClient.profile.fetchAll({
-        where: { ownedBy: session?.address },
-      })
-      console.log("User profiles:", profiles)
+  // Example state for storing fetched data
+  const [accountStats, setAccountStats] = useState(null)
+  const [loading, setLoading] = useState(false)
 
-      // Perform custom operations with the Lens API
-      // ...
+  // Custom function to fetch account stats using Lens Protocol Actions
+  const fetchStats = async () => {
+    if (!currentSession || !localName) return
+
+    setLoading(true)
+    try {
+      // Use LensProtocolActions instead of importing from @lens-protocol/client/actions
+      const result = await LensProtocolActions.fetchAccountStats(
+        currentSession,
+        {
+          username: {
+            localName: localName,
+          },
+        }
+      )
+
+      if (result?.isOk()) {
+        setAccountStats(result.value)
+        console.log("Account stats:", result.value)
+      } else if (result?.isErr()) {
+        console.error("Error fetching account stats:", result.error)
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err)
+    } finally {
+      setLoading(false)
     }
   }
 
+  // Fetch stats when component mounts and dependencies change
+  useEffect(() => {
+    fetchStats()
+  }, [currentSession, localName])
+
   return (
     <div>
-      {session ? (
-        <>
-          <p>Connected as: {session.profile?.handle}</p>
-          <button onClick={handleCustomAction}>Perform Custom Action</button>
-          <button onClick={() => logout()}>Logout</button>
-        </>
-      ) : (
-        <p>Not connected</p>
+      <button onClick={fetchStats} disabled={loading}>
+        {loading ? "Loading..." : "Refresh Stats"}
+      </button>
+
+      {accountStats && (
+        <div>
+          <h3>Account Stats for {localName}:</h3>
+          <p>Total Posts: {accountStats.posts}</p>
+          <p>Comments: {accountStats.comments}</p>
+          <p>Mirrors: {accountStats.mirrors}</p>
+          <p>Followers: {accountStats.followers}</p>
+          <p>Following: {accountStats.following}</p>
+        </div>
       )}
     </div>
   )
 }
 ```
 
-For complete documentation on available hooks and functions in `@lens-protocol/react`, refer to the [official Lens Protocol React documentation](https://lens.xyz/docs/protocol/getting-started/react).
+This approach gives you the flexibility to directly use any functionality from the Lens Protocol libraries while still taking advantage of our pre-built UI components. The `LensProtocolActions` export provides access to all client actions from `@lens-protocol/client/actions`, making it easy to perform operations like fetching account stats, creating posts, and more.
 
-The direct access to the Lens Protocol React API gives you the flexibility to build custom functionality while still using our pre-built UI components.
+For complete documentation on available hooks and functions, refer to the [official Lens Protocol React documentation](https://lens.xyz/docs/protocol/getting-started/react).
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This package is licensed under the MIT License.
+For complete documentation on available hooks and functions, refer to the [official Lens Protocol React documentation](https://lens.xyz/docs/protocol/getting-started/react).
 
 ## Contributing
 
