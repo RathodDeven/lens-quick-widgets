@@ -49,9 +49,11 @@ const getPublicationData = (
         asset: {
           uri: metadata.audio.item || audioAttachments?.uri,
           cover:
+            metadata.audio.cover ||
             metadata.attachments.find(
               (attachment) => attachment.__typename === "MediaImage"
-            )?.item || audioAttachments?.coverUri,
+            )?.item ||
+            audioAttachments?.coverUri,
           title: metadata.title!,
           type: "Audio",
         },

@@ -17,9 +17,17 @@ import {
   Button,
   Switch,
   FormControlLabel,
-  Stack
+  Stack,
+  Divider
 } from '@mui/material'
-import { PageSize, PostsList, Theme } from '@lens-quick-widgets/ui'
+import {
+  EvmAddress,
+  MainContentFocus,
+  PageSize,
+  PostId,
+  PostsList,
+  Theme
+} from '@lens-quick-widgets/ui'
 import { APP_LINK } from '@/src/utils/config'
 
 export default function PostsListShowcase() {
@@ -44,6 +52,24 @@ export default function PostsListShowcase() {
     'repost',
     'comment'
   ])
+
+  // New state variables for additional parameters
+  const [minAccountScore, setMinAccountScore] = useState<number>(0)
+  const [maxAccountScore, setMaxAccountScore] = useState<number>(0)
+  const [useAccountScore, setUseAccountScore] = useState<string>('none')
+  const [apps, setApps] = useState<string>('')
+  const [authors, setAuthors] = useState<string>('')
+  const [contentWarnings, setContentWarnings] = useState<string[]>([])
+  const [tags, setTags] = useState<string>('')
+  const [mainContentFocus, setMainContentFocus] = useState<string[]>([])
+  const [postIds, setPostIds] = useState<string>('')
+  const [postTypes, setPostTypes] = useState<string[]>([])
+
+  // Style customization
+  const [containerStyleJSON, setContainerStyleJSON] = useState<string>('{}')
+  const [postStyleJSON, setPostStyleJSON] = useState<string>('{}')
+  const [postContainerStyleJSON, setPostContainerStyleJSON] =
+    useState<string>('{}')
 
   // Animation variants
   const containerVariants = {
@@ -98,6 +124,28 @@ export default function PostsListShowcase() {
     { value: 'comment', label: 'Comment' }
   ]
 
+  const availableContentWarnings = [
+    { value: 'NSFW', label: 'NSFW' },
+    { value: 'SENSITIVE', label: 'Sensitive' },
+    { value: 'SPOILER', label: 'Spoiler' }
+  ]
+
+  const availableContentFocus = [
+    { value: 'IMAGE', label: 'Image' },
+    { value: 'VIDEO', label: 'Video' },
+    { value: 'ARTICLE', label: 'Article' },
+    { value: 'TEXT_ONLY', label: 'Text Only' },
+    { value: 'AUDIO', label: 'Audio' },
+    { value: 'LIVESTREAM', label: 'Livestream' }
+  ]
+
+  const availablePostTypes = [
+    { value: 'POST', label: 'Post' },
+    { value: 'COMMENT', label: 'Comment' },
+    { value: 'MIRROR', label: 'Mirror' },
+    { value: 'QUOTE', label: 'Quote' }
+  ]
+
   // Function to generate iframe code
   const generateIframeCode = () => {
     let params = new URLSearchParams()
@@ -114,6 +162,41 @@ export default function PostsListShowcase() {
     if (contentPreviewLimit !== 400)
       params.append('previewLimit', contentPreviewLimit.toString())
 
+    // Add new parameters
+    if (useAccountScore === 'min' && minAccountScore > 0)
+      params.append('minAccountScore', minAccountScore.toString())
+    if (useAccountScore === 'max' && maxAccountScore > 0)
+      params.append('maxAccountScore', maxAccountScore.toString())
+    if (apps) params.append('apps', apps)
+    if (authors) params.append('authors', authors)
+    if (contentWarnings.length > 0)
+      params.append('contentWarnings', contentWarnings.join(','))
+    if (tags) params.append('tags', tags)
+    if (mainContentFocus.length > 0)
+      params.append('mainContentFocus', mainContentFocus.join(','))
+    if (postIds) params.append('postIds', postIds)
+    if (postTypes.length > 0) params.append('postTypes', postTypes.join(','))
+
+    // Add style parameters if they differ from defaults
+    if (containerStyleJSON !== '{}')
+      params.append('containerStyle', encodeURIComponent(containerStyleJSON))
+    if (postStyleJSON !== '{}')
+      params.append('postStyle', encodeURIComponent(postStyleJSON))
+    if (postContainerStyleJSON !== '{}')
+      params.append(
+        'postContainerStyle',
+        encodeURIComponent(postContainerStyleJSON)
+      )
+
+    // Add visible stats and buttons
+    if (visibleStats.length > 0 && visibleStats.length < availableStats.length)
+      params.append('visibleStats', visibleStats.join(','))
+    if (
+      visibleButtons.length > 0 &&
+      visibleButtons.length < availableButtons.length
+    )
+      params.append('visibleButtons', visibleButtons.join(','))
+
     // Safely access window.location.origin for browser environments only
     const baseUrl =
       typeof window !== 'undefined' ? window.location.origin : APP_LINK
@@ -126,8 +209,64 @@ export default function PostsListShowcase() {
 </iframe>`
   }
 
+  // Prepare account score for component
+  const getAccountScore = () => {
+    if (useAccountScore === 'min' && minAccountScore > 0) {
+      return { atLeast: minAccountScore }
+    } else if (useAccountScore === 'max' && maxAccountScore > 0) {
+      return { lessThan: maxAccountScore }
+    }
+    return undefined
+  }
+
+  // Prepare metadata for component
+  const getMetadata = () => {
+    const metadata: any = {}
+
+    if (contentWarnings.length > 0) {
+      metadata.contentWarning = { oneOf: contentWarnings }
+    }
+
+    if (tags) {
+      metadata.tags = { oneOf: tags.split(',').map((tag) => tag.trim()) }
+    }
+
+    if (mainContentFocus.length > 0) {
+      metadata.mainContentFocus = mainContentFocus
+    }
+
+    return Object.keys(metadata).length > 0 ? metadata : undefined
+  }
+
+  // Parse comma-separated addresses
+  const parseAddresses = (input: string) => {
+    if (!input) return undefined
+    return input
+      .split(',')
+      .map((addr) => addr.trim())
+      .filter((addr) => addr)
+  }
+
+  // Parse post IDs
+  const parsePostIds = (input: string) => {
+    if (!input) return undefined
+    return input
+      .split(',')
+      .map((id) => id.trim())
+      .filter((id) => id)
+  }
+
+  // Parse JSON style objects
+  const parseStyle = (input: string) => {
+    try {
+      return JSON.parse(input)
+    } catch (e) {
+      return {}
+    }
+  }
+
   // JSX code for the component
-  const componentCode = `import { PostsList } from "@lens-quick-widgets/ui"
+  const componentCode = `import { PostsList, PageSize, Theme } from "@lens-quick-widgets/ui"
 
 <PostsList 
   theme="${theme}"
@@ -142,18 +281,45 @@ export default function PostsListShowcase() {
   contentPreviewLimit={${contentPreviewLimit}}
   visibleStats={[${visibleStats.map((s) => `"${s}"`).join(', ')}]}
   visibleButtons={[${visibleButtons.map((b) => `"${b}"`).join(', ')}]}
+  ${useAccountScore !== 'none' ? `accountScore={{ ${useAccountScore === 'min' ? `atLeast: ${minAccountScore}` : `lessThan: ${maxAccountScore}`} }}` : ''}
+  ${
+    apps
+      ? `apps={[${parseAddresses(apps)
+          ?.map((app) => `"${app}"`)
+          .join(', ')}]}`
+      : ''
+  }
+  ${
+    authors
+      ? `authors={[${parseAddresses(authors)
+          ?.map((author) => `"${author}"`)
+          .join(', ')}]}`
+      : ''
+  }
+  ${getMetadata() ? `metadata={${JSON.stringify(getMetadata(), null, 2)}}` : ''}
+  ${
+    postIds
+      ? `posts={[${parsePostIds(postIds)
+          ?.map((id) => `"${id}"`)
+          .join(', ')}]}`
+      : ''
+  }
+  ${postTypes.length > 0 ? `postTypes={[${postTypes.map((type) => `"${type}"`).join(', ')}]}` : ''}
+  ${containerStyleJSON !== '{}' ? `containerStyle={${containerStyleJSON}}` : ''}
+  ${postStyleJSON !== '{}' ? `postStyle={${postStyleJSON}}` : ''}
+  ${postContainerStyleJSON !== '{}' ? `postContainerStyle={${postContainerStyleJSON}}` : ''}
   onPostClick={(post) => console.log("Post clicked:", post.id)}
   onLike={(post) => console.log("Post liked:", post.id)}
   onRepost={(post) => console.log("Post reposted:", post.id)}
 />`
 
   return (
-    <Container maxWidth="lg" className="py-12">
+    <Container maxWidth="lg" className="py-6">
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="space-y-12"
+        className="space-y-8"
       >
         <motion.div variants={itemVariants}>
           <Typography
@@ -353,6 +519,209 @@ export default function PostsListShowcase() {
                   </Stack>
                 </Box>
 
+                <Divider sx={{ my: 3 }} />
+
+                {/* Advanced Filtering Options */}
+                <Typography variant="h6" component="h3" className="mb-3">
+                  Advanced Filtering
+                </Typography>
+
+                <FormControl fullWidth margin="normal">
+                  <InputLabel>Account Score filter</InputLabel>
+                  <Select
+                    value={useAccountScore}
+                    label="Account score filter"
+                    onChange={(e) => setUseAccountScore(e.target.value)}
+                  >
+                    <MenuItem value="none">Don't filter by score</MenuItem>
+                    <MenuItem value="min">Minimum score</MenuItem>
+                    <MenuItem value="max">Maximum score</MenuItem>
+                  </Select>
+                </FormControl>
+
+                {useAccountScore === 'min' && (
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Minimum Account Score"
+                    type="number"
+                    value={minAccountScore}
+                    onChange={(e) => setMinAccountScore(Number(e.target.value))}
+                  />
+                )}
+
+                {useAccountScore === 'max' && (
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Maximum Account Score"
+                    type="number"
+                    value={maxAccountScore}
+                    onChange={(e) => setMaxAccountScore(Number(e.target.value))}
+                  />
+                )}
+
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Apps (comma-separated EVM addresses)"
+                  value={apps}
+                  onChange={(e) => setApps(e.target.value)}
+                  helperText="Filter by posts created with specific apps"
+                />
+
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Authors (comma-separated EVM addresses)"
+                  value={authors}
+                  onChange={(e) => setAuthors(e.target.value)}
+                  helperText="Filter by specific author addresses"
+                />
+
+                <Box mt={3}>
+                  <InputLabel sx={{ mb: 1 }}>Content Warnings</InputLabel>
+                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    {availableContentWarnings.map((warning) => (
+                      <Chip
+                        key={warning.value}
+                        label={warning.label}
+                        onClick={() => {
+                          if (contentWarnings.includes(warning.value)) {
+                            setContentWarnings(
+                              contentWarnings.filter((w) => w !== warning.value)
+                            )
+                          } else {
+                            setContentWarnings([
+                              ...contentWarnings,
+                              warning.value
+                            ])
+                          }
+                        }}
+                        color={
+                          contentWarnings.includes(warning.value)
+                            ? 'primary'
+                            : 'default'
+                        }
+                        sx={{ mb: 1 }}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Tags (comma-separated)"
+                  value={tags}
+                  onChange={(e) => setTags(e.target.value)}
+                  helperText="Filter by post tags"
+                />
+
+                <Box mt={3}>
+                  <InputLabel sx={{ mb: 1 }}>Main Content Focus</InputLabel>
+                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    {availableContentFocus.map((focus) => (
+                      <Chip
+                        key={focus.value}
+                        label={focus.label}
+                        onClick={() => {
+                          if (mainContentFocus.includes(focus.value)) {
+                            setMainContentFocus(
+                              mainContentFocus.filter((f) => f !== focus.value)
+                            )
+                          } else {
+                            setMainContentFocus((prev) => [
+                              ...prev,
+                              focus.value
+                            ])
+                          }
+                        }}
+                        color={
+                          mainContentFocus.includes(focus.value)
+                            ? 'primary'
+                            : 'default'
+                        }
+                        sx={{ mb: 1 }}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Post IDs (comma-separated)"
+                  value={postIds}
+                  onChange={(e) => setPostIds(e.target.value)}
+                  helperText="Filter by specific post IDs"
+                />
+
+                <Box mt={3}>
+                  <InputLabel sx={{ mb: 1 }}>Post Types</InputLabel>
+                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    {availablePostTypes.map((type) => (
+                      <Chip
+                        key={type.value}
+                        label={type.label}
+                        onClick={() => {
+                          if (postTypes.includes(type.value)) {
+                            setPostTypes(
+                              postTypes.filter((t) => t !== type.value)
+                            )
+                          } else {
+                            setPostTypes([...postTypes, type.value])
+                          }
+                        }}
+                        color={
+                          postTypes.includes(type.value) ? 'primary' : 'default'
+                        }
+                        sx={{ mb: 1 }}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+
+                <Divider sx={{ my: 3 }} />
+
+                {/* Style Customization */}
+                <Typography variant="h6" component="h3" className="mb-3">
+                  Style Customization
+                </Typography>
+
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Container Style (JSON)"
+                  multiline
+                  rows={2}
+                  value={containerStyleJSON}
+                  onChange={(e) => setContainerStyleJSON(e.target.value)}
+                  helperText="CSS styles for main container in JSON format"
+                />
+
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Post Style (JSON)"
+                  multiline
+                  rows={2}
+                  value={postStyleJSON}
+                  onChange={(e) => setPostStyleJSON(e.target.value)}
+                  helperText="CSS styles for posts in JSON format"
+                />
+
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Post Container Style (JSON)"
+                  multiline
+                  rows={2}
+                  value={postContainerStyleJSON}
+                  onChange={(e) => setPostContainerStyleJSON(e.target.value)}
+                  helperText="CSS styles for post containers in JSON format"
+                />
+
                 {/* Code display */}
                 <Typography variant="subtitle1" className="mt-6 mb-2">
                   Component Code:
@@ -411,6 +780,21 @@ export default function PostsListShowcase() {
                     contentPreviewLimit={contentPreviewLimit}
                     visibleStats={visibleStats as any}
                     visibleButtons={visibleButtons as any}
+                    accountScore={getAccountScore()}
+                    apps={
+                      parseAddresses(apps) as EvmAddress[] | null | undefined
+                    }
+                    authors={
+                      parseAddresses(authors) as EvmAddress[] | null | undefined
+                    }
+                    metadata={getMetadata()}
+                    posts={parsePostIds(postIds) as PostId[] | null | undefined}
+                    postTypes={
+                      postTypes.length > 0 ? (postTypes as any) : undefined
+                    }
+                    containerStyle={parseStyle(containerStyleJSON)}
+                    postStyle={parseStyle(postStyleJSON)}
+                    postContainerStyle={parseStyle(postContainerStyleJSON)}
                     onPostClick={handlePostClick}
                     onLike={handleLike}
                     onRepost={handleRepost}

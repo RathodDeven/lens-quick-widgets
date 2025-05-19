@@ -110,12 +110,12 @@ export default function AccountShowcase() {
 />`
 
   return (
-    <Container maxWidth="lg" className="py-12">
+    <Container maxWidth="lg" className="py-6">
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="space-y-12"
+        className="space-y-8"
       >
         <motion.div variants={itemVariants}>
           <Typography

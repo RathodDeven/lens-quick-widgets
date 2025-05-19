@@ -131,12 +131,29 @@ export const PostsList: React.FC<PostsListProps> = ({
     ? [...(authors ?? []), accountData.address as EvmAddress]
     : authors
 
+  // Reset posts when filter parameters change
+  useEffect(() => {
+    // Reset posts, cursor and loading state
+    setAllPosts([])
+    setCursor(null)
+    setNextCursor(null)
+    setHasMore(true)
+    setIsLoading(false)
+  }, [
+    // Add all filter parameters as dependencies
+    searchQuery,
+    postsOf,
+    pageSize,
+    JSON.stringify(accountScore),
+    JSON.stringify(apps),
+    JSON.stringify(authors),
+    JSON.stringify(metadata),
+    JSON.stringify(posts),
+    JSON.stringify(postTypes),
+  ])
+
   // Fetch posts using the usePosts hook
-  const {
-    data: postsData,
-    loading: postsLoading,
-    error: postsError,
-  } = usePosts({
+  const { data: postsData, loading: postsLoading } = usePosts({
     cursor,
     pageSize,
     filter: {
@@ -244,13 +261,6 @@ export const PostsList: React.FC<PostsListProps> = ({
       {!postsLoading && allPosts.length === 0 && (
         <div style={{ textAlign: "center", padding: "20px" }}>
           No posts found
-        </div>
-      )}
-
-      {/* Error state */}
-      {postsError && (
-        <div style={{ textAlign: "center", padding: "20px", color: "red" }}>
-          Error loading posts: {postsError}
         </div>
       )}
 

@@ -151,6 +151,10 @@ export const Post = ({
     null
   )
 
+  const { execute: undoReaction, loading: undoLoading } = useUndoReaction()
+  const { execute: addReaction, loading: addLoading } = useAddReaction()
+  const { execute: createRepost, loading: repostLoading } = useRepost()
+
   // Check if post is deleted
   const isDisplayPostDeleted = displayPost?.isDeleted || false
   const isParentPostDeleted = parentPost?.isDeleted || false
@@ -174,10 +178,42 @@ export const Post = ({
   // State to track if content should be fully displayed
   const [showFullContent, setShowFullContent] = useState(false)
 
+  // Parse asset from post metadata using getPublicationData
+  const publicationData = displayPost?.metadata
+    ? getPublicationData(displayPost.metadata)
+    : null
+
+  // State for image slider
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const hasMultipleImages = publicationData?.attachments
+    ? publicationData.attachments.filter(
+        (attachment) => attachment.type === "Image"
+      ).length > 1
+    : false
+
   // Function to toggle content display
   const toggleContentDisplay = (e: React.MouseEvent) => {
     e.stopPropagation() // Prevent triggering onClick handler of the post
     setShowFullContent(!showFullContent)
+  }
+
+  // Image slider navigation
+  const nextImage = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!publicationData?.attachments) return
+    const images = publicationData.attachments.filter(
+      (attachment) => attachment.type === "Image"
+    )
+    setCurrentImageIndex((prev) => (prev + 1) % images.length)
+  }
+
+  const prevImage = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!publicationData?.attachments) return
+    const images = publicationData.attachments.filter(
+      (attachment) => attachment.type === "Image"
+    )
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
   }
 
   // Update displayPost and originalPost when either post or fetchedPost changes
@@ -204,17 +240,6 @@ export const Post = ({
       onLoad(currentPost)
     }
   }, [currentPost, onLoad])
-
-  // Import reaction hooks
-  const { execute: addReaction, loading: addReactionLoading } = useAddReaction()
-  const { execute: undoReaction, loading: undoReactionLoading } =
-    useUndoReaction()
-  const { execute: createRepost, loading: repostLoading } = useRepost()
-
-  // Parse asset from post metadata using getPublicationData
-  const publicationData = displayPost?.metadata
-    ? getPublicationData(displayPost.metadata)
-    : null
 
   // Format timestamp to readable format
   const formatTimestamp = (timestamp?: number | string): string => {
@@ -949,101 +974,304 @@ export const Post = ({
               </div>
             )}
 
-            {/* Audio content */}
+            {/* Audio content - Enhanced version */}
             {publicationData?.asset?.type === "Audio" && (
-              <div style={{ padding: "16px", textAlign: "center" }}>
+              <div style={{ padding: "16px" }}>
                 <div
                   style={{
                     backgroundColor: isDarkBackground
-                      ? "rgba(255,255,255,0.1)"
-                      : "rgba(0,0,0,0.05)",
-                    padding: "16px",
-                    borderRadius: "8px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    gap: "8px",
+                      ? "rgba(255,255,255,0.08)"
+                      : "rgba(0,0,0,0.03)",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    boxShadow: isDarkBackground
+                      ? "0 4px 20px rgba(0,0,0,0.3)"
+                      : "0 4px 20px rgba(0,0,0,0.1)",
                   }}
                 >
-                  {publicationData.asset.cover && (
-                    <img
-                      src={publicationData.asset.cover}
-                      alt="Audio cover"
-                      style={{
-                        width: "120px",
-                        height: "120px",
-                        objectFit: "cover",
-                        borderRadius: "4px",
-                      }}
-                    />
-                  )}
-                  <audio
-                    controls
-                    src={publicationData.asset.uri}
+                  <div
                     style={{
-                      width: "100%",
-                      maxWidth: "400px",
+                      display: "flex",
+                      flexDirection: publicationData.asset.cover
+                        ? "row"
+                        : "column",
+                      alignItems: "center",
+                      flexWrap: "wrap",
                     }}
                   >
-                    Your browser does not support the audio element.
-                  </audio>
-                  {publicationData.asset.title && (
-                    <div style={{ fontWeight: "bold", marginTop: "8px" }}>
-                      {publicationData.asset.title}
+                    {publicationData.asset.cover && (
+                      <div
+                        style={{
+                          width: "160px",
+                          height: "160px",
+                          flexShrink: 0,
+                          position: "relative",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <LoadingImage
+                          src={publicationData.asset.cover}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                          alt="Audio cover"
+                          theme={themeToUse}
+                        />
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        padding: "20px",
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        minWidth: "200px",
+                      }}
+                    >
+                      {publicationData.asset.title && (
+                        <h3
+                          style={{
+                            margin: "0 0 8px 0",
+                            fontSize: "18px",
+                            fontWeight: "bold",
+                            color: textColor,
+                          }}
+                        >
+                          {publicationData.asset.title}
+                        </h3>
+                      )}
+                      {publicationData.asset.artist && (
+                        <div
+                          style={{
+                            fontSize: "14px",
+                            marginBottom: "12px",
+                            color: isDarkBackground
+                              ? "rgba(255,255,255,0.8)"
+                              : "rgba(0,0,0,0.7)",
+                          }}
+                        >
+                          {publicationData.asset.artist}
+                        </div>
+                      )}
+                      <audio
+                        controls
+                        src={publicationData.asset.uri}
+                        style={{
+                          width: "100%",
+                          height: "36px",
+                          borderRadius: "18px",
+                        }}
+                      >
+                        Your browser does not support the audio element.
+                      </audio>
                     </div>
-                  )}
-                  {publicationData.asset.artist && (
-                    <div style={{ fontSize: "14px", opacity: 0.8 }}>
-                      {publicationData.asset.artist}
-                    </div>
-                  )}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Display additional attachments if any */}
+            {/* Display attachments - now with an image slider for multiple images */}
             {publicationData?.attachments &&
               publicationData.attachments.length > 0 && (
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "8px",
-                    padding: "0 16px 16px 16px",
-                    justifyContent: "center",
-                  }}
-                >
-                  {publicationData.attachments.map((attachment, index) => {
-                    if (attachment.type === "Image") {
-                      return (
-                        <ImageModal
-                          key={`attachment-${index}`}
-                          imageSrc={attachment.uri}
-                          imageAlt={`Attachment ${index + 1}`}
-                          trigger={
-                            <LoadingImage
-                              src={attachment.uri}
-                              style={{
-                                maxWidth: "100px",
-                                maxHeight: "100px",
-                                borderRadius: "4px",
-                                cursor: "pointer",
+                <div style={{ padding: "0 16px 16px 16px" }}>
+                  {hasMultipleImages ? (
+                    // Image Slider for multiple images
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "100%",
+                        borderRadius: "12px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {/* Image Container */}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          backgroundColor: isDarkBackground
+                            ? "rgba(0,0,0,0.2)"
+                            : "rgba(0,0,0,0.05)",
+                          position: "relative",
+                          borderRadius: "12px",
+                          minHeight: "200px",
+                        }}
+                      >
+                        {publicationData.attachments
+                          .filter((attachment) => attachment.type === "Image")
+                          .map((attachment, index) => (
+                            <motion.div
+                              key={`image-${index}`}
+                              initial={{ opacity: 0 }}
+                              animate={{
+                                opacity: index === currentImageIndex ? 1 : 0,
+                                display:
+                                  index === currentImageIndex
+                                    ? "block"
+                                    : "none",
                               }}
-                              alt={`Attachment ${index + 1}`}
-                              theme={themeToUse}
+                              style={{
+                                position: "absolute",
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <ImageModal
+                                imageSrc={attachment.uri}
+                                imageAlt={`Image ${index + 1}`}
+                                trigger={
+                                  <LoadingImage
+                                    src={attachment.uri}
+                                    style={{
+                                      maxWidth: "100%",
+                                      maxHeight: "400px",
+                                      objectFit: "contain",
+                                      borderRadius: "8px",
+                                      cursor: "pointer",
+                                    }}
+                                    alt={`Image ${index + 1}`}
+                                    theme={themeToUse}
+                                  />
+                                }
+                              />
+                            </motion.div>
+                          ))}
+                      </div>
+
+                      {/* Navigation Buttons */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "10px",
+                          transform: "translateY(-50%)",
+                          zIndex: 10,
+                          cursor: "pointer",
+                          backgroundColor: isDarkBackground
+                            ? "rgba(0,0,0,0.5)"
+                            : "rgba(255,255,255,0.7)",
+                          borderRadius: "50%",
+                          width: "36px",
+                          height: "36px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        onClick={prevImage}
+                      >
+                        ←
+                      </div>
+
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          right: "10px",
+                          transform: "translateY(-50%)",
+                          zIndex: 10,
+                          cursor: "pointer",
+                          backgroundColor: isDarkBackground
+                            ? "rgba(0,0,0,0.5)"
+                            : "rgba(255,255,255,0.7)",
+                          borderRadius: "50%",
+                          width: "36px",
+                          height: "36px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        onClick={nextImage}
+                      >
+                        →
+                      </div>
+
+                      {/* Image Indicators */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "15px",
+                          left: "0",
+                          right: "0",
+                          display: "flex",
+                          justifyContent: "center",
+                          gap: "6px",
+                          zIndex: 5,
+                        }}
+                      >
+                        {publicationData.attachments
+                          .filter((attachment) => attachment.type === "Image")
+                          .map((_, index) => (
+                            <div
+                              key={`indicator-${index}`}
+                              style={{
+                                width: "8px",
+                                height: "8px",
+                                borderRadius: "50%",
+                                backgroundColor:
+                                  index === currentImageIndex
+                                    ? accentColor
+                                    : isDarkBackground
+                                    ? "rgba(255,255,255,0.3)"
+                                    : "rgba(0,0,0,0.2)",
+                                transition: "background-color 0.3s",
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setCurrentImageIndex(index)
+                              }}
                             />
-                          }
-                          imageStyle={{
-                            maxWidth: "90vw",
-                            maxHeight: "90vh",
-                            objectFit: "contain",
-                          }}
-                        />
-                      )
-                    }
-                    return null
-                  })}
+                          ))}
+                      </div>
+                    </div>
+                  ) : (
+                    // Original display for single images or other attachments
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "8px",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {publicationData.attachments.map((attachment, index) => {
+                        if (attachment.type === "Image") {
+                          return (
+                            <ImageModal
+                              key={`attachment-${index}`}
+                              imageSrc={attachment.uri}
+                              imageAlt={`Attachment ${index + 1}`}
+                              trigger={
+                                <LoadingImage
+                                  src={attachment.uri}
+                                  style={{
+                                    maxWidth: "100px",
+                                    maxHeight: "100px",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                  }}
+                                  alt={`Attachment ${index + 1}`}
+                                  theme={themeToUse}
+                                />
+                              }
+                              imageStyle={{
+                                maxWidth: "90vw",
+                                maxHeight: "90vh",
+                                objectFit: "contain",
+                              }}
+                            />
+                          )
+                        }
+                        return null
+                      })}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -1182,7 +1410,7 @@ export const Post = ({
                   e.stopPropagation()
                   handleLike()
                 }}
-                disabled={addReactionLoading || undoReactionLoading}
+                disabled={undoLoading || repostLoading || addLoading}
               >
                 {liked ? <FaThumbsUp /> : <FaRegThumbsUp />}
                 <span>{likeCount}</span>
