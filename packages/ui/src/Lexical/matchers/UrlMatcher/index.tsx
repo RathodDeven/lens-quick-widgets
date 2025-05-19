@@ -4,12 +4,6 @@ import { createElement } from "react"
 
 import { BLOCKED_TLDS, URL_PATTERN } from "./constants"
 
-const shortFormOfLink = (children: ChildrenNode): string => {
-  const text = children?.toString() || ""
-  if (text.length <= 30) return text
-  return text.slice(0, 15) + "..." + text.slice(-10)
-}
-
 interface UrlProps {
   children: ChildrenNode
   url: string
@@ -41,7 +35,7 @@ const Url = ({ children, url }: UrlProps) => {
       rel="noopener"
     >
       {/* @ts-ignore */}
-      {shortFormOfLink(children)}
+      {children}
     </a>
   )
 }

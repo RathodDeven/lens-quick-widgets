@@ -51,7 +51,7 @@ export const SignInWithLens: React.FC<SignInWithLensProps> = ({
   const { isConnected, address } = useAccount()
   const { disconnect } = useDisconnect()
   const { data: authenticatedUser } = useAuthenticatedUser()
-  const { data: account } = useLensAccount({
+  const { data: account, loading } = useLensAccount({
     address: authenticatedUser?.address,
   })
   const { execute: logout } = useLogout()
@@ -59,6 +59,16 @@ export const SignInWithLens: React.FC<SignInWithLensProps> = ({
   // Add states for login popup
   const [showLoginPopup, setShowLoginPopup] = useState(false)
   const [signInClicked, setSignInClicked] = useState(false)
+
+  // Pulse animation for loading states
+  const pulseAnimation = {
+    opacity: [0.6, 0.8, 0.6],
+    transition: {
+      duration: 1.5,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
+  }
 
   const iconVariants = {
     initial: { x: 50, opacity: 0 },
@@ -161,33 +171,59 @@ export const SignInWithLens: React.FC<SignInWithLensProps> = ({
                 position: "relative",
               }}
             >
-              <motion.img
-                src={
-                  account?.metadata?.picture || getStampFyiURL(address || "")
-                }
-                alt="Profile"
-                style={{
-                  width: "24px",
-                  height: "24px",
-                  borderRadius: "50%",
-                  border: `1px solid ${textColor}40`,
-                }}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 500 }}
-              />
-              <span
-                style={{
-                  maxWidth: "140px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {account?.username?.localName ||
-                  account?.metadata?.name ||
-                  `${address?.slice(0, 5)}...${address?.slice(-4)}`}
-              </span>
+              {loading ? (
+                <motion.div
+                  animate={pulseAnimation}
+                  style={{
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "50%",
+                    backgroundColor: `${textColor}40`,
+                    border: `1px solid ${textColor}40`,
+                  }}
+                />
+              ) : (
+                <motion.img
+                  src={
+                    account?.metadata?.picture || getStampFyiURL(address || "")
+                  }
+                  alt="Profile"
+                  style={{
+                    width: "24px",
+                    height: "24px",
+                    borderRadius: "50%",
+                    border: `1px solid ${textColor}40`,
+                  }}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 500 }}
+                />
+              )}
+
+              {loading ? (
+                <motion.div
+                  animate={pulseAnimation}
+                  style={{
+                    width: "100px",
+                    height: "16px",
+                    borderRadius: "4px",
+                    backgroundColor: `${textColor}40`,
+                  }}
+                />
+              ) : (
+                <span
+                  style={{
+                    maxWidth: "140px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {account?.username?.localName ||
+                    account?.metadata?.name ||
+                    `${address?.slice(0, 5)}...${address?.slice(-4)}`}
+                </span>
+              )}
             </div>
 
             <AnimatePresence>
