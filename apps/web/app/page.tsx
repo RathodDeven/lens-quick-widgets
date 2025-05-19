@@ -265,8 +265,9 @@ export default function Home() {
                         variant="body2"
                         sx={{ color: 'rgba(255, 255, 255, 0.9)' }}
                       >
-                        We're working on more powerful components to help you
-                        build with Lens Protocol
+                        {
+                          "We're working on more powerful components to help you build with Lens Protocol"
+                        }
                       </Typography>
                     </CardContent>
                     {/* Diagonal "Coming Soon" ribbon */}

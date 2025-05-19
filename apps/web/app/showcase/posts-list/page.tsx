@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Box,
@@ -28,8 +28,7 @@ import {
   PageSize,
   PostId,
   PostsList,
-  Theme,
-  LensProtocolReact
+  Theme
 } from 'lens-quick-widgets'
 import { APP_LINK } from '@/src/utils/config'
 
@@ -553,7 +552,7 @@ export default function PostsListShowcase() {
                     label="Account score filter"
                     onChange={(e) => setUseAccountScore(e.target.value)}
                   >
-                    <MenuItem value="none">Don't filter by score</MenuItem>
+                    <MenuItem value="none">{"Don't filter by score"}</MenuItem>
                     <MenuItem value="min">Minimum score</MenuItem>
                     <MenuItem value="max">Maximum score</MenuItem>
                   </Select>

@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Box,
@@ -21,7 +21,8 @@ import {
 import { Post, Theme } from 'lens-quick-widgets'
 import { APP_LINK, EXAMPLE_POST_ID } from '@/src/utils/config'
 
-const page = () => {
+// Change from lowercase 'page' to uppercase 'Page'
+const Page = () => {
   // State for component props
   const [theme, setTheme] = useState<Theme>(Theme.default)
   const [postId, setPostId] = useState<string>(EXAMPLE_POST_ID)
@@ -395,4 +396,5 @@ const page = () => {
   )
 }
 
-export default page
+// Also update the export to use the new name
+export default Page
