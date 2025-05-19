@@ -19,6 +19,7 @@ A comprehensive React component library for building applications with [Lens Pro
 - [Theming](#theming)
 - [Types](#types)
 - [Advanced Usage](#advanced-usage)
+- [Accessing Lens Protocol React API](#accessing-lens-protocol-react-api)
 - [Contributing](#contributing)
 
 ## Installation
@@ -268,31 +269,29 @@ import {
 
 #### Props
 
-| Prop                       | Type                             | Default                         | Description                                   |
-| -------------------------- | -------------------------------- | ------------------------------- | --------------------------------------------- |
-| searchBy                   | `string`                         | -                               | Search accounts by name or handle             |
-| addresses                  | `string[]`                       | -                               | Show accounts with specific addresses         |
-| ownedBy                    | `string[]`                       | -                               | Show accounts owned by specific addresses     |
-| localNames                 | `string[]`                       | -                               | Show accounts with specific handles           |
-| managedBy                  | `string`                         | -                               | Show accounts managed by a specific address   |
-| followersOf                | `string`                         | -                               | Show followers of a specific handle           |
-| followingsOf               | `string`                         | -                               | Show accounts followed by a specific handle   |
-| pageSize                   | `PageSize`                       | `PageSize.Ten`                  | Number of accounts per page                   |
-| theme                      | `Theme`                          | Context theme                   | Visual theme                                  |
-| accountSize                | `Size`                           | `Size.small`                    | Size of account components                    |
-| orderBy                    | `AccountsOrderBy`                | `AccountsOrderBy.BestMatch`     | Sorting for regular accounts                  |
-| followersOrderBy           | `FollowersOrderBy`               | `FollowersOrderBy.AccountScore` | Sorting for followers                         |
-| followingOrderBy           | `FollowingOrderBy`               | `FollowingOrderBy.AccountScore` | Sorting for followings                        |
-| containerStyle             | `React.CSSProperties`            | -                               | Custom container styling                      |
-| accountStyle               | `React.CSSProperties`            | -                               | Custom account component styling              |
-| followButtonStyle          | `React.CSSProperties`            | -                               | Custom follow button styling                  |
-| followButtonContainerStyle | `React.CSSProperties`            | -                               | Custom follow button container styling        |
-| followButtonTextColor      | `string`                         | -                               | Custom follow button text color               |
-| hideFollowButton           | `boolean`                        | `false`                         | Hide the follow button                        |
-| showUnfollowButton         | `boolean`                        | `false`                         | Show unfollow button for followed users       |
-| fontSize                   | `string`                         | -                               | Custom font size                              |
-| onAccountClick             | `(account: AccountType) => void` | -                               | Called when an account is clicked             |
-| onFollowed                 | `() => void`                     | -                               | Called when an account is followed/unfollowed |
+| Prop                       | Type                  | Default                         | Description                                 |
+| -------------------------- | --------------------- | ------------------------------- | ------------------------------------------- |
+| searchBy                   | `string`              | -                               | Search accounts by name or handle           |
+| addresses                  | `string[]`            | -                               | Show accounts with specific addresses       |
+| ownedBy                    | `string[]`            | -                               | Show accounts owned by specific addresses   |
+| localNames                 | `string[]`            | -                               | Show accounts with specific handles         |
+| managedBy                  | `string`              | -                               | Show accounts managed by a specific address |
+| followersOf                | `string`              | -                               | Show followers of a specific handle         |
+| followingsOf               | `string`              | -                               | Show accounts followed by a specific handle |
+| pageSize                   | `PageSize`            | `PageSize.Ten`                  | Number of accounts per page                 |
+| theme                      | `Theme`               | Context theme                   | Visual theme                                |
+| accountSize                | `Size`                | `Size.small`                    | Size of account components                  |
+| orderBy                    | `AccountsOrderBy`     | `AccountsOrderBy.BestMatch`     | Sorting for regular accounts                |
+| followersOrderBy           | `FollowersOrderBy`    | `FollowersOrderBy.AccountScore` | Sorting for followers                       |
+| followingOrderBy           | `FollowingOrderBy`    | `FollowingOrderBy.AccountScore` | Sorting for followings                      |
+| containerStyle             | `React.CSSProperties` | -                               | Custom container styling                    |
+| accountStyle               | `React.CSSProperties` | -                               | Custom account component styling            |
+| followButtonStyle          | `React.CSSProperties` | -                               | Custom follow button styling                |
+| followButtonContainerStyle | `React.CSSProperties` | -                               | Custom follow button container styling      |
+| followButtonTextColor      | `string`              | -                               | Custom follow button text color             |
+| hideFollowButton           | `boolean`             | `false`                         | Hide the follow button                      |
+| showUnfollowButton         | `boolean`             | `false`                         | Show unfollow button for followed users     |
+| fontSize                   | `string`              | -                               | Custom font size                            |
 
 ## Theming
 
@@ -410,6 +409,53 @@ You can track this flow with the provided callbacks:
   postTypes={["POST", "COMMENT"]}
 />
 ```
+
+### Accessing Lens Protocol React API
+
+This library re-exports the complete `@lens-protocol/react` library as `LensProtocolReact`, allowing you to access any hooks, functions, or types from the original library:
+
+```jsx
+import { LensProtocolReact } from "lens-quick-widgets"
+
+function MyComponent() {
+  // Access any hook from the original library
+  const { data: session } = LensProtocolReact.useSession()
+  const { execute: logout } = LensProtocolReact.useLogout()
+  const { data: sessionClient } = LensProtocolReact.useSessionClient()
+
+  // Example: Using session client to perform actions
+  const handleCustomAction = async () => {
+    if (sessionClient) {
+      // Access full Lens Protocol API functionality
+      const profiles = await sessionClient.profile.fetchAll({
+        where: { ownedBy: session?.address },
+      })
+      console.log("User profiles:", profiles)
+
+      // Perform custom operations with the Lens API
+      // ...
+    }
+  }
+
+  return (
+    <div>
+      {session ? (
+        <>
+          <p>Connected as: {session.profile?.handle}</p>
+          <button onClick={handleCustomAction}>Perform Custom Action</button>
+          <button onClick={() => logout()}>Logout</button>
+        </>
+      ) : (
+        <p>Not connected</p>
+      )}
+    </div>
+  )
+}
+```
+
+For complete documentation on available hooks and functions in `@lens-protocol/react`, refer to the [official Lens Protocol React documentation](https://lens.xyz/docs/protocol/getting-started/react).
+
+The direct access to the Lens Protocol React API gives you the flexibility to build custom functionality while still using our pre-built UI components.
 
 ## Contributing
 
