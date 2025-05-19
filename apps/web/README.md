@@ -3,7 +3,7 @@
 A Next.js application showcasing the capabilities of the `lens-quick-widgets` library. This demo app provides a comprehensive playground to explore all components, their configurations, and iframe embedding functionality.
 
 <p align="center">
-  <img src="./public/lens-beauty-widgets-logo.png" alt="Lens Quick Widgets Logo" width="150"/>
+  <img src="./public/android-chrome-512x512" alt="Lens Quick Widgets Logo" width="150"/>
 </p>
 
 ## Features

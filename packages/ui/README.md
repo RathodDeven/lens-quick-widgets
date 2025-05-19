@@ -3,7 +3,7 @@
 A comprehensive React component library for building applications with [Lens Protocol](https://lens.xyz/). This package provides ready-to-use UI components to streamline your development process.
 
 <p align="center">
-  <img src="../../apps/web/public/lens-beauty-widgets-logo.png" alt="Lens Quick Widgets Logo" width="150"/>
+  <img src="../../apps/web/public/android-chrome-512x512.png" alt="Lens Quick Widgets Logo" width="150"/>
 </p>
 
 ## Table of Contents
@@ -88,7 +88,6 @@ A button that handles the entire Lens authentication flow, from wallet connectio
 
 ```jsx
 import { SignInWithLens, Theme } from "lens-quick-widgets"
-
 ;<SignInWithLens
   theme={Theme.dark}
   onConnectWallet={(address) => console.log(`Connected: ${address}`)}
@@ -112,7 +111,6 @@ Displays a single Lens Protocol post with rich formatting, media support, and in
 
 ```jsx
 import { Post, Theme } from "lens-quick-widgets"
-
 ;<Post
   postId="0x01-0x01"
   theme={Theme.light}
@@ -156,7 +154,6 @@ Displays a customizable feed of Lens Protocol posts with infinite scrolling and 
 
 ```jsx
 import { PostsList, PageSize, Theme } from "lens-quick-widgets"
-
 ;<PostsList
   theme={Theme.green}
   pageSize={PageSize.Ten}
@@ -207,7 +204,6 @@ Displays a Lens Protocol user profile with customizable styling and size options
 
 ```jsx
 import { Account, Theme, Size } from "lens-quick-widgets"
-
 ;<Account
   localName="stani"
   theme={Theme.mint}
@@ -254,7 +250,6 @@ import {
   Theme,
   AccountsOrderBy,
 } from "lens-quick-widgets"
-
 ;<AccountsList
   theme={Theme.peach}
   accountSize={Size.small}

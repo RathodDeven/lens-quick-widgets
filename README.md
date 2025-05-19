@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/devendran-m/lens-beauty-widgets/main/apps/web/public/lens-beauty-widgets-logo.png" alt="Lens Quick Widgets Logo" width="200"/>
+  <img src="https://raw.githubusercontent.com/devendran-m/lens-beauty-widgets/main/apps/web/public/android-chrome-512x512.png" alt="Lens Quick Widgets Logo" width="200"/>
 </p>
 
 # Lens Quick Widgets
