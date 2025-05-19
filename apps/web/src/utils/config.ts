@@ -1,4 +1,5 @@
-export const APP_NAME = 'My Project'
+export const APP_NAME = 'Lens Quick Widgets'
 export const IPFS_ENDPOINT = 'https://4everland.io/ipfs/'
 export const IMAGE_KIT_ENDPOINT = 'https://ik.imagekit.io/kopveel8c'
 export const DEFAULT_THEME: 'light' | 'dark' = 'light'
+export const EXAMPLE_POST_ID = '121frwetbr02new3gvk'

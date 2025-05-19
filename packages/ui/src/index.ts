@@ -21,7 +21,7 @@ export * from "./AccountsList"
 
 // Re-export types and enums from @lens-protocol/react
 export type {
-  Account,
+  Account as AccountType,
   AnyPost,
   Post as PostType,
   EvmAddress,

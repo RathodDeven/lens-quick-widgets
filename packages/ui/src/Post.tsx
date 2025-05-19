@@ -25,7 +25,6 @@ import {
   FaCoins,
   FaQuoteRight,
   FaHeart,
-  FaThumbsDown,
 } from "react-icons/fa"
 import { ImageModal } from "./ImageModal"
 import Markup from "./Lexical/Markup"
@@ -108,7 +107,6 @@ export const Post = ({
   contentPreviewLimit?: number
   visibleStats?: Array<
     | "upvotes"
-    | "downvotes"
     | "comments"
     | "reposts"
     | "quotes"
@@ -630,7 +628,6 @@ export const Post = ({
   // Configure stats icons mapping
   const statIcons = {
     upvotes: <FaThumbsUp size={14} />,
-    downvotes: <FaThumbsDown size={14} />,
     comments: <FaComment size={14} />,
     reposts: <FaRetweet size={14} />,
     quotes: <FaQuoteRight size={14} />,
@@ -644,10 +641,6 @@ export const Post = ({
     upvotes: {
       singular: "like",
       plural: "likes",
-    },
-    downvotes: {
-      singular: "dislike",
-      plural: "dislikes",
     },
     comments: {
       singular: "comment",
@@ -1222,7 +1215,7 @@ export const Post = ({
                 }}
               >
                 <FaComment />
-                <span>{displayPost.stats?.comments || 0}</span>
+                <span>{displayPost.stats?.upvotes || 0}</span>
               </button>
             )}
           </div>

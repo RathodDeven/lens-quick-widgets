@@ -1,6 +1,7 @@
 'use client'
 import clsx from 'clsx'
 import React from 'react'
+import { usePathname } from 'next/navigation'
 
 import { Inter } from 'next/font/google'
 import TopHeader from '@/src/components/navigation/TopHeader'
@@ -18,15 +19,23 @@ interface Props {
 const inter = Inter({ subsets: ['latin'] })
 
 const UILayout: React.FC<Props> = (props) => {
-  // Define the component's logic and rendering here
+  const pathname = usePathname()
+  const isEmbedPage = pathname?.startsWith('/embed')
+
+  // For embed pages, return children directly without any wrapper
+  if (isEmbedPage) {
+    return <>{props.children}</>
+  }
+
+  // For regular pages, use the normal layout structure
   return (
-    <div className={clsx(inter.className, 'bg-p-bg text-p-text')}>
-      <div className="relative z-10 h-screen w-screen">
-        <div className="w-full absolute left-0 right-0 top-0 ">
+    <div className={clsx(inter.className, 'bg-p-bg text-p-text min-h-screen')}>
+      <div className="relative min-h-screen w-full">
+        <div className="w-full sticky left-0 right-0 top-0 z-10">
           <TopHeader />
         </div>
-        <div className="start-center-row h-screen pt-[60px] overflow-hidden">
-          <div className="h-full w-full">{props.children}</div>
+        <div className="w-full pt-[60px] overflow-y-auto">
+          <div className="w-full">{props.children}</div>
         </div>
       </div>
     </div>

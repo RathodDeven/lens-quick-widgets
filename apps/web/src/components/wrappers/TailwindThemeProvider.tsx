@@ -4,6 +4,7 @@ import { useContext } from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import { createContext } from 'react'
+import { usePathname } from 'next/navigation'
 import { DEFAULT_THEME } from '../../utils/config'
 
 interface ContextType {
@@ -18,6 +19,8 @@ export const ThemeContext = createContext<ContextType>({
 // import MUITheme from './MUITheme'
 const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>(DEFAULT_THEME)
+  const pathname = usePathname()
+  const isEmbedPage = pathname?.startsWith('/embed')
 
   const toggleTheme = () => {
     if (theme === 'light') {
@@ -50,7 +53,18 @@ const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       window.localStorage.setItem('data-theme', systemTheme)
       setTheme(systemTheme)
     }
-  }, [])
+
+    // Mark the HTML element with the current path for CSS targeting
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-pathname', pathname || '')
+    }
+
+    // For embed pages, ensure there are no background colors
+    if (isEmbedPage && typeof document !== 'undefined') {
+      document.body.style.background = 'transparent'
+      document.documentElement.style.background = 'transparent'
+    }
+  }, [pathname, isEmbedPage])
 
   useEffect(() => {
     const metaThemeColor = document.querySelector('meta[name=theme-color]')

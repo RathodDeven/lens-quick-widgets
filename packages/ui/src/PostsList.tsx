@@ -76,7 +76,6 @@ interface PostsListProps {
   contentPreviewLimit?: number
   visibleStats?: Array<
     | "upvotes"
-    | "downvotes"
     | "comments"
     | "reposts"
     | "quotes"

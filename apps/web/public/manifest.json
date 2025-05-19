@@ -1,31 +1,19 @@
 {
-  "theme_color": "#1C1C1C",
-  "background_color": "#1C1C1C",
-  "display": "standalone",
-  "scope": "/",
-  "start_url": "/",
-  "name": "PROJECT_NAME",
-  "short_name": "PROJECT_NAME",
+  "name": "Lens Widgets",
+  "short_name": "Lens Quick Widgets",
   "icons": [
     {
-      "src": "/vercel.svg",
+      "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/vercel.svg",
-      "sizes": "256x256",
-      "type": "image/png"
-    },
-    {
-      "src": "/vercel.svg",
-      "sizes": "384x384",
-      "type": "image/png"
-    },
-    {
-      "src": "/vercel.svg",
+      "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone"
 }

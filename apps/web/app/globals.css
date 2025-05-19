@@ -135,6 +135,17 @@
   }
 }
 
+/* Add transparent background rule for embed pages */
+.embed-container {
+  background: transparent !important;
+}
+
+/* Add specific override for embed pages */
+[data-pathname^='/embed'] body,
+[data-pathname^='/embed'] html {
+  background: transparent !important;
+}
+
 :root {
   /* background */
   --primary-background: #ebebeb;
