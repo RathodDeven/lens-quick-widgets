@@ -147,7 +147,7 @@ export const Account = ({
   }, [currentAccount?.address])
 
   const loading = (!account && accountLoading) || statsLoading
-  const hasError = (error || statsError) && !loading
+  const hasError = !currentAccount && (error || statsError) && !loading
 
   // Simplified renderFollowButton function
   const renderFollowButton = () => {

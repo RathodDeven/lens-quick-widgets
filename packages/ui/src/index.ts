@@ -18,3 +18,27 @@ export * from "./Post"
 export * from "./Player"
 export * from "./PostsList"
 export * from "./AccountsList"
+
+// Re-export types and enums from @lens-protocol/react
+export type {
+  Account,
+  AnyPost,
+  Post as PostType,
+  EvmAddress,
+  PostId,
+} from "@lens-protocol/react"
+
+export {
+  AccountsOrderBy,
+  FollowersOrderBy,
+  FollowingOrderBy,
+  PageSize,
+  ContentWarning,
+  MainContentFocus,
+  PostReferenceType,
+  PostReactionType,
+  PostType as LensPostType,
+} from "@lens-protocol/react"
+
+// Re-export our own types
+export * from "./types"
