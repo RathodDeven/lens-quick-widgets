@@ -1,5 +1,6 @@
 'use client'
 
+import React, { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import {
   AccountsList,
@@ -11,7 +12,8 @@ import {
   Size
 } from 'lens-quick-widgets'
 
-export default function AccountsListEmbed() {
+// Client component that uses useSearchParams hook
+function AccountsListClient() {
   const searchParams = useSearchParams()
 
   // Extract parameters from URL with null check
@@ -72,5 +74,14 @@ export default function AccountsListEmbed() {
       onAccountClick={handleAccountClick}
       onFollowed={handleFollowed}
     />
+  )
+}
+
+// Page component with Suspense boundary
+export default function AccountsListEmbed() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AccountsListClient />
+    </Suspense>
   )
 }

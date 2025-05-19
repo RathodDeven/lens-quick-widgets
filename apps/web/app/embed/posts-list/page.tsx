@@ -1,9 +1,11 @@
 'use client'
 
+import React, { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { PostsList, PageSize, Theme } from 'lens-quick-widgets'
 
-export default function PostsListEmbed() {
+// Client component that uses useSearchParams hook
+function PostsListClient() {
   const searchParams = useSearchParams()
 
   // Extract parameters from URL with null check
@@ -167,5 +169,14 @@ export default function PostsListEmbed() {
       onLike={handleLike}
       onRepost={handleRepost}
     />
+  )
+}
+
+// Page component with Suspense boundary
+export default function PostsListEmbed() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PostsListClient />
+    </Suspense>
   )
 }

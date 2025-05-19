@@ -1,9 +1,11 @@
 'use client'
 
+import React, { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Post, Theme } from 'lens-quick-widgets'
 
-export default function PostEmbed() {
+// Client component that uses useSearchParams hook
+function PostClient() {
   const searchParams = useSearchParams()
 
   // Extract parameters from URL with null check
@@ -67,5 +69,14 @@ export default function PostEmbed() {
       onComment={handleComment}
       onClick={handlePostClick}
     />
+  )
+}
+
+// Page component with Suspense boundary
+export default function PostEmbed() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PostClient />
+    </Suspense>
   )
 }

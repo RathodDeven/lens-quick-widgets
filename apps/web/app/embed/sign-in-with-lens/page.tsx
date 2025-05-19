@@ -1,9 +1,11 @@
 'use client'
 
+import React, { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { SignInWithLens, Theme } from 'lens-quick-widgets'
 
-export default function SignInWithLensEmbed() {
+// Client component that uses useSearchParams hook
+function SignInWithLensClient() {
   const searchParams = useSearchParams()
 
   // Extract parameters from URL with null check
@@ -29,5 +31,14 @@ export default function SignInWithLensEmbed() {
       onLogin={handleLogin}
       onLogout={handleLogout}
     />
+  )
+}
+
+// Page component with Suspense boundary
+export default function SignInWithLensEmbed() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignInWithLensClient />
+    </Suspense>
   )
 }
