@@ -86,6 +86,37 @@ interface PostsListProps {
   visibleButtons?: Array<"like" | "repost" | "comment">
 }
 
+/**
+ * PostsList Component - Displays a filterable, infinite-scrolling list of Lens Protocol posts
+ *
+ * @component
+ * @param {Object} props - Component props
+ * @param {Object} [props.accountScore] - Filter posts by account score
+ * @param {EvmAddress[]} [props.apps] - Filter posts by apps that created them
+ * @param {EvmAddress[]} [props.authors] - Filter posts by authors' addresses
+ * @param {Object} [props.metadata] - Filter posts by metadata (content warnings, tags, etc.)
+ * @param {PostId[]} [props.posts] - Specific post IDs to display
+ * @param {LensPostType[]} [props.postTypes] - Types of posts to display
+ * @param {string} [props.searchQuery] - Text search query for posts
+ * @param {string} [props.postsOf] - Username to fetch posts from (by local name)
+ * @param {PageSize} [props.pageSize=PageSize.Ten] - Number of posts to load per page
+ * @param {Theme} [props.theme] - The theme to use for styling
+ * @param {string|number} [props.widthOfPostCard="100%"] - Width of each post card
+ * @param {Function} [props.onPostClick] - Callback when a post is clicked
+ * @param {Function} [props.onLike] - Callback when a post is liked
+ * @param {Function} [props.onRepost] - Callback when a post is reposted
+ * @param {React.CSSProperties} [props.containerStyle] - Custom container style
+ * @param {React.CSSProperties} [props.postStyle] - Custom post style
+ * @param {React.CSSProperties} [props.postContainerStyle] - Custom post container style
+ * @param {boolean} [props.hideInteractions] - Whether to hide interaction buttons
+ * @param {boolean} [props.showStats=true] - Whether to show post stats
+ * @param {boolean} [props.showFollow=true] - Whether to show follow button
+ * @param {boolean} [props.showUnfollowButton=false] - Whether to show unfollow button
+ * @param {number} [props.contentPreviewLimit] - Character limit for post content preview
+ * @param {Array<string>} [props.visibleStats] - Which stats to display
+ * @param {Array<string>} [props.visibleButtons] - Which interaction buttons to display
+ * @returns {JSX.Element} The rendered posts list with infinite scrolling
+ */
 export const PostsList: React.FC<PostsListProps> = ({
   accountScore,
   apps,

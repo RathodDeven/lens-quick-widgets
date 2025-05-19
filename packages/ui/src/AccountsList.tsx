@@ -50,6 +50,36 @@ interface AccountsListProps {
   fontSize?: string
 }
 
+/**
+ * AccountsList Component - Displays a list of Lens Protocol accounts with various filtering options
+ *
+ * @component
+ * @param {Object} props - Component props
+ * @param {string} [props.searchBy] - Search accounts by username
+ * @param {string[]} [props.addresses] - Array of account addresses to display
+ * @param {string[]} [props.ownedBy] - Array of owner addresses to show accounts owned by
+ * @param {string[]} [props.localNames] - Array of local names to fetch accounts for
+ * @param {string} [props.managedBy] - Address of the manager to fetch managed accounts
+ * @param {string} [props.followersOf] - Show followers of an account (by local name)
+ * @param {string} [props.followingsOf] - Show accounts followed by an account (by local name)
+ * @param {PageSize} [props.pageSize=PageSize.Ten] - Number of accounts to load per page
+ * @param {Theme} [props.theme] - The theme to use for styling
+ * @param {Size} [props.accountSize=Size.small] - Size of the account components
+ * @param {AccountsOrderBy} [props.orderBy=AccountsOrderBy.BestMatch] - Order for accounts query
+ * @param {FollowersOrderBy} [props.followersOrderBy=FollowersOrderBy.AccountScore] - Order for followers query
+ * @param {FollowingOrderBy} [props.followingOrderBy=FollowingOrderBy.AccountScore] - Order for following query
+ * @param {Function} [props.onAccountClick] - Callback when an account is clicked
+ * @param {React.CSSProperties} [props.containerStyle] - Custom container style
+ * @param {React.CSSProperties} [props.accountStyle] - Custom account component style
+ * @param {React.CSSProperties} [props.followButtonStyle] - Custom follow button style
+ * @param {React.CSSProperties} [props.followButtonContainerStyle] - Custom follow button container style
+ * @param {string} [props.followButtonTextColor] - Custom follow button text color
+ * @param {boolean} [props.hideFollowButton] - Whether to hide the follow button
+ * @param {boolean} [props.showUnfollowButton] - Whether to show the unfollow button for followed users
+ * @param {Function} [props.onFollowed] - Callback when user is followed
+ * @param {string} [props.fontSize] - Custom font size for account components
+ * @returns {JSX.Element} The rendered accounts list
+ */
 export const AccountsList: React.FC<AccountsListProps> = ({
   searchBy,
   addresses = [],

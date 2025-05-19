@@ -28,6 +28,17 @@ interface SignInWithLensProps {
   onLogout?: () => void
 }
 
+/**
+ * SignInWithLens Component - A button for connecting wallet and authenticating with Lens Protocol
+ *
+ * @component
+ * @param {Object} props - Component props
+ * @param {Theme} [props.theme] - The theme to use for styling
+ * @param {Function} [props.onConnectWallet] - Callback when wallet is connected, receives wallet address
+ * @param {Function} [props.onLogin] - Callback when Lens Protocol login is successful, receives account data
+ * @param {Function} [props.onLogout] - Callback when user logs out from Lens Protocol
+ * @returns {JSX.Element} The rendered sign-in button with authentication states
+ */
 export const SignInWithLens: React.FC<SignInWithLensProps> = ({
   theme,
   onConnectWallet,

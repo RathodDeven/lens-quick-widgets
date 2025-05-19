@@ -18,12 +18,12 @@ import { motion } from "framer-motion" // Add import for motion
  * @param {Object} props - Component props
  * @param {Account} props.account - The account to follow/unfollow
  * @param {boolean} [props.isFollowing] - Current follow state (optional, will be detected from account if not provided)
- * @param {Function} [props.onFollowChange] - Callback when follow status changes
+ * @param {Function} [props.onFollowChange] - Callback when follow status changes, receives boolean indicating following state
  * @param {Theme} [props.theme] - The theme to use for styling
  * @param {React.CSSProperties} [props.style] - Custom button style
- * @param {Size} [props.size=Size.medium] - Size of the button
+ * @param {Size} [props.size=Size.medium] - Size of the button (compact, small, medium, large)
  * @param {boolean} [props.showUnfollowButton=false] - Whether to show the unfollow button for followed users
- * @returns {JSX.Element | null} The rendered FollowButton component
+ * @returns {JSX.Element | null} The rendered FollowButton component or null if viewing own profile
  */
 const FollowButton = ({
   account,

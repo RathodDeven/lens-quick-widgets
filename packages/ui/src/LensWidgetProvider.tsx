@@ -16,6 +16,17 @@ import {
 
 const queryClient = new QueryClient()
 
+/**
+ * LensWidgetProvider Component - Provides context and configuration for all Lens Protocol widgets
+ *
+ * @component
+ * @param {Object} props - Component props
+ * @param {boolean} [props.isTestnet=false] - Whether to use the testnet environment
+ * @param {Theme} [props.defaultTheme=Theme.default] - The default theme for all child components
+ * @param {string} [props.appAddress] - Custom app address for Lens interactions
+ * @param {React.ReactNode} props.children - Child components that will have access to the Lens context
+ * @returns {JSX.Element} Provider component with all necessary context for Lens widgets
+ */
 export const LensWidgetProvider = ({
   isTestnet = false,
   defaultTheme = Theme.default,
