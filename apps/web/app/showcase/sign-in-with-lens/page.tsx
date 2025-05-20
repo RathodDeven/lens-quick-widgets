@@ -72,7 +72,7 @@ export default function Page() {
   src="${baseUrl}/embed/sign-in-with-lens?theme=${theme}" 
   width="100%" 
   height="100px" 
-  frameborder="0">
+  style={{border: 'none'}}>
 </iframe>`
   }
 

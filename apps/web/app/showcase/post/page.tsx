@@ -127,7 +127,7 @@ const Page = () => {
   src="${baseUrl}/embed/post?${params.toString()}" 
   width="100%" 
   height="auto" 
-  frameborder="0">
+  style={{border: 'none'}}>
 </iframe>`
   }
 

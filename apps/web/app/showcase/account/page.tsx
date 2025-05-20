@@ -92,7 +92,7 @@ export default function AccountShowcase() {
   src="${baseUrl}/embed/account?${params.toString()}" 
   width="100%" 
   height="${size === Size.large ? '400px' : size === Size.medium ? '300px' : '200px'}" 
-  frameborder="0">
+  style={{border: 'none'}}>
 </iframe>`
   }
 

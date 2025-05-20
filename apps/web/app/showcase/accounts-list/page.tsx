@@ -124,7 +124,7 @@ export default function AccountsListShowcase() {
   src="${baseUrl}/embed/accounts-list?${params.toString()}" 
   width="100%" 
   height="600px" 
-  frameborder="0">
+  style={{border: 'none'}}>
 </iframe>`
   }
 
