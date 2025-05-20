@@ -5,6 +5,14 @@ import {
   useAccount,
   useAuthenticatedUser,
 } from "@lens-protocol/react"
+
+// Define fontSizes mapping based on the Size enum
+const fontSizes = {
+  [Size.compact]: "10px",
+  [Size.small]: "12px",
+  [Size.medium]: "14px",
+  [Size.large]: "16px",
+}
 import { useAccountStats } from "./hooks/useAccountStats"
 import { motion, AnimatePresence } from "framer-motion"
 import { FaExclamationCircle } from "react-icons/fa"
@@ -15,7 +23,7 @@ import {
   getContrastColor,
   getStampFyiURL,
 } from "./utils"
-import { COVER_IMAGE_PLACE_HOLDER } from "./config"
+import { COVER_IMAGE_PLACE_HOLDER, HEY_LOGO_URL, HEY_LINK } from "./config"
 import { ImageModal } from "./ImageModal"
 import Tooltip from "./Tooltip"
 import Markup from "./Lexical/Markup"
@@ -41,6 +49,7 @@ import { useLensWidget } from "./LensWidgetContext"
  * @param {string} [props.followButtonTextColor] - Custom follow button text color
  * @param {boolean} [props.hideFollowButton] - Whether to hide the follow button
  * @param {boolean} [props.showUnfollowButton=false] - Whether to show the unfollow button for followed users
+ * @param {boolean} [props.showHeyButton=false] - Whether to show the Hey button linking to the profile on Hey.xyz
  * @param {Function} [props.onFollowed] - Callback when user is followed
  * @param {Function} [props.onClick] - Callback when the component is clicked, receives account and stats data
  * @param {Size} [props.size=Size.medium] - Size of the component:
@@ -62,6 +71,7 @@ export const Account = ({
   followButtonStyle,
   hideFollowButton = false,
   showUnfollowButton = false,
+  showHeyButton = false,
   onFollowed,
   onClick,
   size = Size.medium,
@@ -79,6 +89,7 @@ export const Account = ({
   followButtonTextColor?: string
   hideFollowButton?: boolean
   showUnfollowButton?: boolean
+  showHeyButton?: boolean
   onFollowed?: () => void
   onClick?: (account: AccountType, stats: any) => void
   size?: Size
@@ -98,13 +109,8 @@ export const Account = ({
   const contrastTextColor = getContrastColor(backgroundColor)
   const isDarkBackground = contrastTextColor === ThemeColor.white
 
-  // Font sizes by component size
-  const fontSizes = {
-    compact: fontSize || "12px",
-    small: fontSize || "12px",
-    medium: fontSize || "14px",
-    large: fontSize || "16px",
-  }
+  // State to track hover state for showing/hiding UI elements
+  const [isHovered, setIsHovered] = useState(false)
 
   // Only fetch if we don't have a direct account provided
   const {
@@ -209,7 +215,7 @@ export const Account = ({
         : size === Size.medium || size === Size.large
         ? "center"
         : "left") as React.CSSProperties["textAlign"],
-      // Align profile image to left when follow button is visible
+      // Align profile image to left when follow button is visible, otherwise center
       alignItems:
         !hideFollowButton && (size === Size.medium || size === Size.large)
           ? "flex-start"
@@ -256,11 +262,9 @@ export const Account = ({
       display: "flex",
       flexDirection: "column" as React.CSSProperties["flexDirection"],
       justifyContent: "center" as React.CSSProperties["justifyContent"],
-      alignItems: (!hideFollowButton &&
-      (size === Size.medium || size === Size.large)
-        ? "flex-start"
-        : size === Size.medium || size === Size.large
-        ? "center"
+      // Remove alignItems for medium/large to allow headerRow to control alignment
+      alignItems: (size === Size.medium || size === Size.large
+        ? "stretch" // Use stretch to allow child to take full width
         : "flex-start") as React.CSSProperties["alignItems"],
       textAlign: (!hideFollowButton &&
       (size === Size.medium || size === Size.large)
@@ -268,6 +272,7 @@ export const Account = ({
         : size === Size.medium || size === Size.large
         ? "center"
         : "left") as React.CSSProperties["textAlign"],
+      width: size === Size.medium || size === Size.large ? "100%" : "auto", // Ensure full width for medium/large
     },
     compactInfo: {
       display: "flex",
@@ -325,15 +330,24 @@ export const Account = ({
       marginTop: size === Size.medium || size === Size.large ? "8px" : "12px",
       marginBottom: "0px",
       alignItems: "center",
-      // Left-align stats for small size too
+      // Left-align stats for medium when follow button is visible, and for large size
+      // Center stats when hideFollowButton is true
       justifyContent:
-        size === Size.small || size === Size.large ? "flex-start" : "center",
+        !hideFollowButton && (size === Size.medium || size === Size.large)
+          ? "flex-start"
+          : size === Size.small
+          ? "flex-start"
+          : "center",
       flexWrap: "wrap" as const,
       padding:
         size === Size.large
-          ? "0 20px 0 20px"
+          ? !hideFollowButton
+            ? "0 20px 0 20px"
+            : "0 20px"
           : size === Size.medium
-          ? "0 10px"
+          ? !hideFollowButton
+            ? "0 20px 0 20px" // Add left padding to align with name/username
+            : "0 10px" // Add left padding when follow button is hidden
           : "0",
     },
     statItem: {
@@ -395,7 +409,7 @@ export const Account = ({
       display: "flex",
       width: "100%",
       alignItems: "center",
-      justifyContent: "space-between",
+      justifyContent: hideFollowButton ? "center" : "space-between", // Center when follow button is hidden
       // Reduced spacing
       marginTop: size === Size.medium || size === Size.large ? "4px" : "0",
     },
@@ -598,6 +612,8 @@ export const Account = ({
             onClick(currentAccount, accountStats)
           }
         }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         {/* Banner image for medium and large sizes */}
         {(size === Size.medium || size === Size.large) && (
@@ -612,6 +628,61 @@ export const Account = ({
             transition={{ duration: 0.3 }}
           />
         )}
+
+        {/* Hey button for medium and large when follow button is hidden - positioned absolutely */}
+        {(size === Size.medium || size === Size.large) &&
+          hideFollowButton &&
+          showHeyButton && (
+            <div
+              style={{
+                position: "absolute",
+                top: size === Size.medium ? "110px" : "130px", // Just below the banner
+                right: "20px",
+                zIndex: 2,
+              }}
+            >
+              <Tooltip
+                content="Open in Hey"
+                isDarkTheme={isDarkBackground}
+                position="bottom"
+              >
+                <motion.a
+                  href={`${HEY_LINK}/u/${
+                    currentAccount?.username?.localName ||
+                    currentAccount?.address
+                  }`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    padding: "6px",
+                    borderRadius: "50%",
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: isHovered ? 1 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  whileHover={{
+                    scale: 1.1,
+                    transition: { duration: 0.2 },
+                  }}
+                >
+                  <motion.img
+                    src={HEY_LOGO_URL}
+                    alt="View on Hey"
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "50%",
+                    }}
+                    whileHover={{ rotate: 10 }}
+                  />
+                </motion.a>
+              </Tooltip>
+            </div>
+          )}
 
         {/* Content container with padding for medium and large */}
         <div
@@ -663,6 +734,7 @@ export const Account = ({
                   style={{
                     display: "flex",
                     alignItems: "center",
+                    justifyContent: "space-between",
                     width: "100%",
                   }}
                 >
@@ -690,7 +762,57 @@ export const Account = ({
                           currentAccount?.address?.slice(-4)}
                     </motion.div>
                   </div>
-                  <div style={{ marginLeft: "12px" }}>
+                  {/* Button container with fixed width to prevent layout shifts */}
+                  <div
+                    style={{
+                      marginLeft: "12px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      minWidth: showHeyButton ? "60px" : "0", // Reserve space when showHeyButton is true
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    {showHeyButton && (
+                      <Tooltip
+                        content="Open in Hey"
+                        isDarkTheme={isDarkBackground}
+                        position="bottom"
+                      >
+                        <motion.a
+                          href={`${HEY_LINK}/u/${
+                            currentAccount?.username?.localName ||
+                            currentAccount?.address
+                          }`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            cursor: "pointer",
+                          }}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: isHovered ? 1 : 0 }}
+                          transition={{ duration: 0.3 }}
+                          whileHover={{
+                            scale: 1.1,
+                            transition: { duration: 0.2 },
+                          }}
+                        >
+                          <motion.img
+                            src={HEY_LOGO_URL}
+                            alt="View on Hey"
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              borderRadius: "50%",
+                            }}
+                            whileHover={{ rotate: 10 }}
+                          />
+                        </motion.a>
+                      </Tooltip>
+                    )}
                     {renderFollowButton()}
                   </div>
                 </div>
@@ -704,7 +826,6 @@ export const Account = ({
                     justifyContent: "space-between",
                     alignItems: "center",
                     width: "100%",
-                    gap: "12px", // Add gap for better spacing
                   }}
                 >
                   <div>
@@ -731,16 +852,81 @@ export const Account = ({
                           currentAccount?.address?.slice(-4)}
                     </motion.div>
                   </div>
-                  <div style={{ marginLeft: "8px" }}>
+                  {/* Button container with fixed width for small size */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      minWidth: showHeyButton ? "70px" : "0",
+                      justifyContent: "flex-end",
+                      marginLeft: "16px", // Add margin to create space between username and buttons
+                    }}
+                  >
+                    {showHeyButton && (
+                      <Tooltip
+                        content="Open in Hey"
+                        isDarkTheme={isDarkBackground}
+                        position="bottom"
+                      >
+                        <motion.a
+                          href={`${HEY_LINK}/u/${
+                            currentAccount?.username?.localName ||
+                            currentAccount?.address
+                          }`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            cursor: "pointer",
+                            opacity: isHovered ? 1 : 0,
+                          }}
+                          whileHover={{
+                            scale: 1.1,
+                            transition: { duration: 0.2 },
+                          }}
+                        >
+                          <motion.img
+                            src={HEY_LOGO_URL}
+                            alt="View on Hey"
+                            style={{
+                              width: "22px",
+                              height: "22px",
+                              borderRadius: "50%",
+                            }}
+                            whileHover={{ rotate: 10 }}
+                          />
+                        </motion.a>
+                      </Tooltip>
+                    )}
                     {!hideFollowButton && renderFollowButton()}
                   </div>
                 </div>
               </div>
             ) : (
-              // Medium and large layout - push follow button to the far right
+              // Medium and large layout
               <div style={styles.profileInfo}>
-                <div style={styles.headerRow}>
-                  <div>
+                <div
+                  style={{
+                    ...styles.headerRow,
+                    justifyContent: hideFollowButton
+                      ? "center"
+                      : "space-between", // Center when follow button is hidden
+                    width: "100%", // Force full width
+                  }}
+                >
+                  <div
+                    style={{
+                      maxWidth: hideFollowButton ? "100%" : "70%",
+                      textAlign: hideFollowButton
+                        ? "center"
+                        : ("left" as React.CSSProperties["textAlign"]),
+                    }}
+                  >
+                    {" "}
+                    {/* Limit name width to leave space for buttons */}
                     {currentAccount?.metadata?.name && (
                       <motion.div
                         style={styles.name}
@@ -764,9 +950,61 @@ export const Account = ({
                           currentAccount?.address?.slice(-4)}
                     </motion.div>
                   </div>
-                  <div style={{ marginLeft: "15px" }}>
-                    {renderFollowButton()}
-                  </div>
+                  {/* Only show buttons in header row when follow button is enabled */}
+                  {!hideFollowButton && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        minWidth: showHeyButton ? "80px" : "0",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      {showHeyButton && (
+                        <Tooltip
+                          content="Open in Hey"
+                          isDarkTheme={isDarkBackground}
+                          position="bottom"
+                        >
+                          <motion.a
+                            href={`${HEY_LINK}/u/${
+                              currentAccount?.username?.localName ||
+                              currentAccount?.address
+                            }`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              cursor: "pointer",
+                              opacity: isHovered ? 1 : 0,
+                            }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: isHovered ? 1 : 0 }}
+                            transition={{ duration: 0.3 }}
+                            whileHover={{
+                              scale: 1.1,
+                              transition: { duration: 0.2 },
+                            }}
+                          >
+                            <motion.img
+                              src={HEY_LOGO_URL}
+                              alt="View on Hey"
+                              style={{
+                                width: "24px",
+                                height: "24px",
+                                borderRadius: "50%",
+                              }}
+                              whileHover={{ rotate: 10 }}
+                            />
+                          </motion.a>
+                        </Tooltip>
+                      )}
+                      {renderFollowButton()}
+                    </div>
+                  )}
                 </div>
               </div>
             )}

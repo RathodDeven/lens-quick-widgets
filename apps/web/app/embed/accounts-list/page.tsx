@@ -44,6 +44,7 @@ function AccountsListClient() {
 
   const hideFollowButton = searchParams?.get('hideFollowButton') === 'true'
   const showUnfollowButton = searchParams?.get('showUnfollowButton') === 'true'
+  const showHeyButton = searchParams?.get('showHeyButton') === 'true'
   const fontSize = searchParams?.get('fontSize') || undefined
 
   // Handle callbacks
@@ -70,6 +71,7 @@ function AccountsListClient() {
       followingOrderBy={followingOrderBy}
       hideFollowButton={hideFollowButton}
       showUnfollowButton={showUnfollowButton}
+      showHeyButton={showHeyButton}
       fontSize={fontSize}
       onAccountClick={handleAccountClick}
       onFollowed={handleFollowed}

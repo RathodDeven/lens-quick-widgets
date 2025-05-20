@@ -46,6 +46,7 @@ interface AccountsListProps {
   followButtonTextColor?: string
   hideFollowButton?: boolean
   showUnfollowButton?: boolean
+  showHeyButton?: boolean
   onFollowed?: () => void
   fontSize?: string
 }
@@ -76,6 +77,7 @@ interface AccountsListProps {
  * @param {string} [props.followButtonTextColor] - Custom follow button text color
  * @param {boolean} [props.hideFollowButton] - Whether to hide the follow button
  * @param {boolean} [props.showUnfollowButton] - Whether to show the unfollow button for followed users
+ * @param {boolean} [props.showHeyButton] - Whether to show the Hey button linking to the profile on Hey.xyz
  * @param {Function} [props.onFollowed] - Callback when user is followed
  * @param {string} [props.fontSize] - Custom font size for account components
  * @returns {JSX.Element} The rendered accounts list
@@ -103,6 +105,7 @@ export const AccountsList: React.FC<AccountsListProps> = ({
   followButtonTextColor,
   hideFollowButton,
   showUnfollowButton,
+  showHeyButton,
   onFollowed,
   fontSize,
 }) => {
@@ -322,6 +325,7 @@ export const AccountsList: React.FC<AccountsListProps> = ({
               followButtonTextColor={followButtonTextColor}
               hideFollowButton={hideFollowButton}
               showUnfollowButton={showUnfollowButton}
+              showHeyButton={showHeyButton}
               onFollowed={onFollowed}
               fontSize={fontSize}
             />

@@ -52,6 +52,7 @@ export default function AccountsListShowcase() {
   )
   const [hideFollowButton, setHideFollowButton] = useState<boolean>(false)
   const [showUnfollowButton, setShowUnfollowButton] = useState<boolean>(false)
+  const [showHeyButton, setShowHeyButton] = useState<boolean>(false)
   const [fontSize, setFontSize] = useState<string>('')
 
   // Animation variants
@@ -114,6 +115,7 @@ export default function AccountsListShowcase() {
     if (followingOrderBy) params.append('followingOrderBy', followingOrderBy)
     if (hideFollowButton) params.append('hideFollowButton', 'true')
     if (showUnfollowButton) params.append('showUnfollowButton', 'true')
+    if (showHeyButton) params.append('showHeyButton', 'true')
     if (fontSize) params.append('fontSize', fontSize)
 
     // Safely access window.location.origin for browser environments only
@@ -145,6 +147,7 @@ export default function AccountsListShowcase() {
   followingOrderBy={FollowingOrderBy.${Object.keys(FollowingOrderBy).find((key) => FollowingOrderBy[key as keyof typeof FollowingOrderBy] === followingOrderBy)}}
   ${hideFollowButton ? 'hideFollowButton={true}' : ''}
   ${showUnfollowButton ? 'showUnfollowButton={true}' : ''}
+  ${showHeyButton ? 'showHeyButton={true}' : ''}
   ${fontSize ? `fontSize="${fontSize}"` : ''}
   onAccountClick={(account) => console.log("Account clicked:", account)}
   onFollowed={() => console.log("Account followed/unfollowed")}
@@ -426,6 +429,16 @@ export default function AccountsListShowcase() {
                     }
                     label="Show Unfollow Button"
                   />
+
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={showHeyButton}
+                        onChange={(e) => setShowHeyButton(e.target.checked)}
+                      />
+                    }
+                    label="Show Hey Button"
+                  />
                 </Box>
                 {/* Code display */}
                 <Typography variant="subtitle1" className="mt-6 mb-2">
@@ -484,6 +497,7 @@ export default function AccountsListShowcase() {
                     followingOrderBy={followingOrderBy}
                     hideFollowButton={hideFollowButton}
                     showUnfollowButton={showUnfollowButton}
+                    showHeyButton={showHeyButton}
                     fontSize={fontSize || undefined}
                     onAccountClick={handleAccountClick}
                     onFollowed={handleFollowed}

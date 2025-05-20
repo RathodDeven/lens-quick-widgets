@@ -15,6 +15,7 @@ function AccountClient() {
   const size = (searchParams?.get('size') as Size) || Size.medium
   const hideFollowButton = searchParams?.get('hideFollowButton') === 'true'
   const showUnfollowButton = searchParams?.get('showUnfollowButton') === 'true'
+  const showHeyButton = searchParams?.get('showHeyButton') === 'true'
   const fontSize = searchParams?.get('fontSize') || undefined
 
   // Handle callbacks
@@ -43,6 +44,7 @@ function AccountClient() {
       size={size}
       hideFollowButton={hideFollowButton}
       showUnfollowButton={showUnfollowButton}
+      showHeyButton={showHeyButton}
       fontSize={fontSize}
       onAccountLoad={handleAccountLoad}
       onClick={handleAccountClick}

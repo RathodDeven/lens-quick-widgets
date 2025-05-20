@@ -27,6 +27,7 @@ export default function AccountShowcase() {
   const [accountAddress, setAccountAddress] = useState<string>('')
   const [hideFollowButton, setHideFollowButton] = useState<boolean>(false)
   const [showUnfollowButton, setShowUnfollowButton] = useState<boolean>(false)
+  const [showHeyButton, setShowHeyButton] = useState<boolean>(false)
   const [fontSize, setFontSize] = useState<string>('')
   const [loadedAccount, setLoadedAccount] = useState<any>(null)
 
@@ -82,6 +83,7 @@ export default function AccountShowcase() {
     if (size) params.append('size', size)
     if (hideFollowButton) params.append('hideFollowButton', 'true')
     if (showUnfollowButton) params.append('showUnfollowButton', 'true')
+    if (showHeyButton) params.append('showHeyButton', 'true')
     if (fontSize) params.append('fontSize', fontSize)
 
     // Safely access window.location.origin for browser environments only
@@ -106,6 +108,7 @@ export default function AccountShowcase() {
   size={Size.${Size[size]}}
   ${hideFollowButton ? 'hideFollowButton={true}' : ''}
   ${showUnfollowButton ? 'showUnfollowButton={true}' : ''}
+  ${showHeyButton ? 'showHeyButton={true}' : ''}
   ${fontSize ? `fontSize="${fontSize}"` : ''}
   onAccountLoad={(account) => console.log("Account loaded:", account)}
   onClick={(account, stats) => console.log("Account clicked:", account, stats)}
@@ -229,6 +232,18 @@ export default function AccountShowcase() {
                   />
                 </Box>
 
+                <Box mt={1}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={showHeyButton}
+                        onChange={(e) => setShowHeyButton(e.target.checked)}
+                      />
+                    }
+                    label="Show Hey Button"
+                  />
+                </Box>
+
                 {/* Account data display */}
                 {loadedAccount && (
                   <Box mt={3} p={2} bgcolor="action.hover" borderRadius={1}>
@@ -294,6 +309,7 @@ export default function AccountShowcase() {
                     size={size}
                     hideFollowButton={hideFollowButton}
                     showUnfollowButton={showUnfollowButton}
+                    showHeyButton={showHeyButton}
                     fontSize={fontSize || undefined}
                     onAccountLoad={handleAccountLoad}
                     onClick={handleAccountClick}
