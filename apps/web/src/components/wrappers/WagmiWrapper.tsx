@@ -4,6 +4,7 @@ import { getDefaultConfig } from 'connectkit'
 import { createConfig, http, WagmiProvider } from 'wagmi'
 import { lens } from 'wagmi/chains'
 import { LensWidgetProvider } from 'lens-quick-widgets'
+import { APP_ICON_LINK, APP_LINK } from '../../utils/config'
 
 const config = createConfig(
   getDefaultConfig({
@@ -25,8 +26,8 @@ const config = createConfig(
     // Optional App Info
     appDescription:
       'Lens Quick Widget is a simple and easy to use widget for Lens Protocol',
-    appUrl: 'https://family.co', // your app's url
-    appIcon: 'https://family.co/logo.png' // your app's icon, no bigger than 1024x1024px (max. 1MB)
+    appUrl: APP_LINK, // your app's url
+    appIcon: APP_ICON_LINK // your app's icon, no bigger than 1024x1024px (max. 1MB)
   })
 )
 

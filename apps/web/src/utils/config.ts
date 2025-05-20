@@ -7,3 +7,5 @@ export const NPM_PACKAGE_LINK =
   'https://www.npmjs.com/package/lens-quick-widgets'
 export const IPFS_ENDPOINT = 'https://4everland.io/ipfs/'
 export const IMAGE_KIT_ENDPOINT = 'https://ik.imagekit.io/kopveel8c'
+export const APP_ICON_LINK =
+  'https://lens-quick-widgets-web.vercel.app/android-chrome-192x192.png'
