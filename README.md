@@ -188,6 +188,9 @@ We're continuously working to enhance Lens Quick Widgets. Here are some planned 
 - **Enhanced Content Compatibility** - Expanding content focus compatibility in the Post component
 - **Mutual Followers** - Integrating mutual followers information in the Account component when logged in
 - **Additional Customization Options** - More styling and configuration options for all components
+- **Interactive Comment System** - Upon clicking the comment button, open a popup with the post card, displaying existing comments and allowing users to create new comments
+- **Create Post Component** - A dedicated component for creating and publishing new posts directly from your application
+- **Quote Post Component** - Enable users to quote and respond to existing posts with added context
 
 ## Contributing
 
