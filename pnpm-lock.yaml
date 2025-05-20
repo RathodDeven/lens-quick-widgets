@@ -162,8 +162,8 @@ importers:
         specifier: ^0.3.7
         version: 0.3.7
       lens-quick-widgets:
-        specifier: ^0.1.6
-        version: 0.1.6(983ede250c879ed442c152ac851f908e)
+        specifier: ^0.1.7
+        version: 0.1.7(983ede250c879ed442c152ac851f908e)
       next:
         specifier: 15.0.3
         version: 15.0.3(@babel/core@7.27.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3449,8 +3449,8 @@ packages:
       react-dom: 18.3.1
       wagmi: ^2.15.3
 
-  lens-quick-widgets@0.1.6:
-    resolution: {integrity: sha512-cz2+mieyRb6CzAhV+Ms0HcuW9gT0DaalRB53O0vlauj7R41AANpHfOpRyT3NQWgS/dL4gaX4kSmD0a92e/jq6g==}
+  lens-quick-widgets@0.1.7:
+    resolution: {integrity: sha512-i3TSQuEt2qF5+x/HD/IZODllRukNE6lqxSXvChUt3KDUex1gIPKTgqQ9TBvLY+L7GtpWwGliHNoiX+UcabrNdA==}
     peerDependencies:
       connectkit: ^1.9.0
       react: 18.3.1
@@ -9514,7 +9514,7 @@ snapshots:
       - zksync-ethers
       - zod
 
-  lens-quick-widgets@0.1.6(983ede250c879ed442c152ac851f908e):
+  lens-quick-widgets@0.1.7(983ede250c879ed442c152ac851f908e):
     dependencies:
       '@emotion/css': 11.13.5
       '@lens-chain/sdk': 1.0.3(ethers@6.14.1(bufferutil@4.0.9)(utf-8-validate@5.0.10))(viem@2.29.4(bufferutil@4.0.9)(typescript@5.7.2)(utf-8-validate@5.0.10)(zod@3.24.4))
