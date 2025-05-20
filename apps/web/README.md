@@ -17,7 +17,7 @@ A Next.js application showcasing the capabilities of the `lens-quick-widgets` li
 
 ### Prerequisites
 
-- Node.js 16+ and yarn/npm
+- Node.js 16+ and pnpm
 - Alchemy API key
 - WalletConnect Project ID
 
@@ -25,20 +25,20 @@ A Next.js application showcasing the capabilities of the `lens-quick-widgets` li
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/lens-beauty-widgets.git
+git clone https://github.com/RathodDeven/lens-quick-widgets.git
 
-# Navigate to the web app
-cd lens-beauty-widgets/apps/web
+# Navigate to the project root
+cd lens-quick-widgets
 
 # Install dependencies
-yarn install
+pnpm install
 ```
 
 Note: The example app already includes `wagmi` and `connectkit` as dependencies, which are required for `lens-quick-widgets` to function properly.
 
 ### Environment Variables
 
-Create a `.env.local` file with the following:
+Create a `.env.local` file in the `apps/web` directory with the following:
 
 ```
 NEXT_PUBLIC_ALCHEMY_ID=your_alchemy_id
@@ -48,7 +48,11 @@ NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_walletconnect_project_id
 ### Running the Development Server
 
 ```bash
-yarn dev
+# Run only the web app
+pnpm dev:web
+
+# Or run all packages in development mode
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the app in action.
@@ -56,8 +60,11 @@ Open [http://localhost:3000](http://localhost:3000) to see the app in action.
 ### Building for Production
 
 ```bash
-yarn build
-yarn start
+# Build only the web app
+pnpm --filter web run build
+
+# Or build all packages
+pnpm build
 ```
 
 ## Project Structure

@@ -30,8 +30,8 @@ This repository contains two main packages:
 # Install the package in your React project along with required dependencies
 npm install lens-quick-widgets wagmi connectkit
 
-# Or using yarn
-yarn add lens-quick-widgets wagmi connectkit
+# Or using pnpm
+pnpm add lens-quick-widgets wagmi connectkit
 ```
 
 Note: `lens-quick-widgets` requires both `wagmi` and `connectkit` as peer dependencies.
@@ -147,17 +147,20 @@ You can embed any component on external websites (blogs, streamers' overlay, etc
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/lens-beauty-widgets.git
-cd lens-beauty-widgets
+git clone https://github.com/RathodDeven/lens-quick-widgets.git
+cd lens-quick-widgets
 
 # Install dependencies
-yarn install
+pnpm install
 
 # Build UI package
-yarn workspace lens-quick-widgets build
+pnpm build:ui
 
 # Run the web app
-yarn workspace web dev
+pnpm dev:web
+
+# Run the UI development server
+pnpm dev:ui
 ```
 
 ### Environment Variables
