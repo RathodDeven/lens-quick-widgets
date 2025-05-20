@@ -162,8 +162,8 @@ importers:
         specifier: ^0.3.7
         version: 0.3.7
       lens-quick-widgets:
-        specifier: ^0.1.5
-        version: 0.1.5(983ede250c879ed442c152ac851f908e)
+        specifier: workspace:*
+        version: link:../../packages/ui
       next:
         specifier: 15.0.3
         version: 15.0.3(@babel/core@7.27.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

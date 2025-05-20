@@ -7,3 +7,7 @@ export const LENS_WIDGET_APP_ADDRESS =
 
 export const LENS_WIDGET_APP_ADDRESS_TESTNET =
   "0x7789216b0e55bDB38206f167cA5bd80923f01351"
+
+export const HEY_LOGO_URL = "https://static.hey.xyz/images/app-icon/0.png"
+
+export const HEY_LINK = "https://hey.xyz"

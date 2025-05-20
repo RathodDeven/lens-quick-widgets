@@ -65,7 +65,7 @@ export const SignInWithLens: React.FC<SignInWithLensProps> = ({
   const { data: account, loading } = useLensAccount({
     address: authenticatedUser?.address,
   })
-  const { execute: logout } = useLogout()
+  const { execute: logout, loading: logoutLoading } = useLogout()
 
   // Add states for login popup
   const [showLoginPopup, setShowLoginPopup] = useState(false)
@@ -78,6 +78,16 @@ export const SignInWithLens: React.FC<SignInWithLensProps> = ({
       duration: 1.5,
       repeat: Infinity,
       ease: "easeInOut",
+    },
+  }
+
+  // Add a spinning animation for the logout loading state
+  const spinAnimation = {
+    rotate: [0, 360],
+    transition: {
+      duration: 1,
+      repeat: Infinity,
+      ease: "linear",
     },
   }
 
@@ -118,6 +128,8 @@ export const SignInWithLens: React.FC<SignInWithLensProps> = ({
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.stopPropagation()
+    if (logoutLoading) return // Prevent multiple clicks while loading
+
     const result = await logout()
     if (result.isOk() && onLogout) {
       onLogout()
@@ -257,11 +269,31 @@ export const SignInWithLens: React.FC<SignInWithLensProps> = ({
                     borderRadius: "20px 0 0 20px",
                     padding: "0 16px",
                     boxShadow: "-2px 0 4px rgba(0,0,0,0.1)",
+                    cursor: logoutLoading ? "not-allowed" : "pointer",
+                    opacity: logoutLoading ? 0.8 : 1,
                   }}
                   onClick={handleLogout}
                 >
-                  <Tooltip content="Logout" position="bottom">
-                    <FaSignOutAlt size={16} />
+                  <Tooltip
+                    content={logoutLoading ? "Logging out..." : "Logout"}
+                    position="bottom"
+                  >
+                    {logoutLoading ? (
+                      <motion.div
+                        animate={spinAnimation}
+                        style={{
+                          width: "16px",
+                          height: "16px",
+                          borderRadius: "50%",
+                          borderTop: `2px solid ${accentTextColor}`,
+                          borderRight: `2px solid transparent`,
+                          borderBottom: `2px solid transparent`,
+                          borderLeft: `2px solid transparent`,
+                        }}
+                      />
+                    ) : (
+                      <FaSignOutAlt size={16} />
+                    )}
                   </Tooltip>
                 </motion.div>
               )}

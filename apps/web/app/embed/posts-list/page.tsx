@@ -19,6 +19,7 @@ function PostsListClient() {
   const showStats = searchParams?.get('showStats') !== 'false'
   const showFollow = searchParams?.get('showFollow') !== 'false'
   const showUnfollowButton = searchParams?.get('showUnfollowButton') === 'true'
+  const showHeyButton = searchParams?.get('showHeyButton') === 'true'
   const contentPreviewLimit = searchParams?.get('previewLimit')
     ? parseInt(searchParams.get('previewLimit') as string, 10)
     : 400
@@ -153,6 +154,7 @@ function PostsListClient() {
       showStats={showStats}
       showFollow={showFollow}
       showUnfollowButton={showUnfollowButton}
+      showHeyButton={showHeyButton}
       contentPreviewLimit={contentPreviewLimit}
       visibleStats={visibleStats as any}
       visibleButtons={visibleButtons as any}

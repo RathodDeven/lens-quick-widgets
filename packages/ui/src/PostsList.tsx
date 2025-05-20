@@ -57,6 +57,7 @@ interface PostsListProps {
   pageSize?: PageSize
   theme?: Theme
   widthOfPostCard?: string | number
+  showHeyButton?: boolean
 
   // Event handlers
   onPostClick?: (post: AnyPost) => void
@@ -102,6 +103,7 @@ interface PostsListProps {
  * @param {PageSize} [props.pageSize=PageSize.Ten] - Number of posts to load per page
  * @param {Theme} [props.theme] - The theme to use for styling
  * @param {string|number} [props.widthOfPostCard="100%"] - Width of each post card
+ * @param {boolean} [props.showHeyButton=false] - Whether to show the Hey button on posts
  * @param {Function} [props.onPostClick] - Callback when a post is clicked
  * @param {Function} [props.onLike] - Callback when a post is liked
  * @param {Function} [props.onRepost] - Callback when a post is reposted
@@ -129,6 +131,7 @@ export const PostsList: React.FC<PostsListProps> = ({
   pageSize = PageSize.Ten,
   theme,
   widthOfPostCard = "100%",
+  showHeyButton = false,
   onPostClick,
   onLike,
   onRepost,
@@ -273,6 +276,7 @@ export const PostsList: React.FC<PostsListProps> = ({
               showStats={showStats}
               showFollow={showFollow}
               showUnfollowButton={showUnfollowButton}
+              showHeyButton={showHeyButton}
               contentPreviewLimit={contentPreviewLimit}
               visibleStats={visibleStats}
               visibleButtons={visibleButtons}

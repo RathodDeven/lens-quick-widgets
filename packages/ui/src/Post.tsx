@@ -35,6 +35,7 @@ import { LoadingImage } from "./LoadingImage"
 import { VideoPlayer } from "./Player"
 import getPublicationData from "./getPublicationData"
 import FollowButton from "./FollowButton"
+import { HEY_LOGO_URL, HEY_LINK } from "./config" // Import HEY constants
 
 // Import hooks for like, repost
 import { useAddReaction } from "./hooks/useAddReaction"
@@ -60,6 +61,7 @@ import Tooltip from "./Tooltip"
  * @param {boolean} [props.showStats] - Whether to show stats section
  * @param {boolean} [props.showFollow] - Whether to show follow button
  * @param {boolean} [props.showUnfollowButton=false] - Whether to show the unfollow button for followed users
+ * @param {boolean} [props.showHeyButton=false] - Whether to show the Hey button linking to the post on Hey.xyz
  * @param {number} [props.contentPreviewLimit=400] - Character limit for content preview before showing "Show more" button
  * @param {Array<string>} [props.visibleStats] - Array of stat names to display
  * @param {Array<string>} [props.visibleButtons] - Array of interaction button names to display
@@ -79,6 +81,7 @@ export const Post = ({
   showStats = true,
   showFollow = true,
   showUnfollowButton = false,
+  showHeyButton = false,
   contentPreviewLimit = 400,
   visibleStats = [
     "upvotes",
@@ -104,6 +107,7 @@ export const Post = ({
   showStats?: boolean
   showFollow?: boolean
   showUnfollowButton?: boolean
+  showHeyButton?: boolean
   contentPreviewLimit?: number
   visibleStats?: Array<
     | "upvotes"
@@ -210,6 +214,9 @@ export const Post = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const hasMultipleImages = allImages.length > 1
   const hasSingleImage = allImages.length === 1
+
+  // State to track hover state for showing/hiding UI elements
+  const [isHovered, setIsHovered] = useState(false)
 
   // Image slider navigation
   const nextImage = (e: React.MouseEvent) => {
@@ -445,6 +452,17 @@ export const Post = ({
     return num.toString()
   }
 
+  // Add a function to check if all stats have zero values
+  const areAllStatsZero = React.useMemo(() => {
+    if (!displayPost?.stats) return true
+
+    return visibleStats.every((statName) => {
+      const value =
+        displayPost.stats![statName as keyof typeof displayPost.stats]
+      return !value || value === 0
+    })
+  }, [displayPost?.stats, visibleStats])
+
   // Loading or error states
   if (!displayPost && !postLoading) {
     return (
@@ -664,6 +682,20 @@ export const Post = ({
       fontWeight: "bold",
       fontSize: "14px",
     },
+    heyButton: {
+      display: "flex",
+      alignItems: "center",
+      marginLeft: "auto",
+      marginRight: "8px",
+      opacity: 0,
+      transition: "opacity 0.2s ease-in-out",
+      cursor: "pointer",
+    },
+    heyLogo: {
+      width: "24px",
+      height: "24px",
+      borderRadius: "50%",
+    },
   }
 
   // Configure stats icons mapping
@@ -719,6 +751,9 @@ export const Post = ({
         transition={{ duration: 0.3 }}
         style={styles.container}
         onClick={() => onClick?.(displayPost)}
+        className="post-container"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         {/* Show repost indicator when it's a repost */}
         {originalPost?.__typename === "Repost" && (
@@ -899,14 +934,56 @@ export const Post = ({
               </div>
             </div>
           </div>
-          <Tooltip
-            isDarkTheme={isDarkBackground}
-            content={formatDetailedTimestamp(displayPost.timestamp)}
-          >
-            <div style={styles.timestamp}>
-              {formatTimestamp(displayPost.timestamp)}
-            </div>
-          </Tooltip>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {showHeyButton && isHovered && (
+              <Tooltip
+                content="Open in Hey"
+                isDarkTheme={isDarkBackground}
+                position="bottom"
+              >
+                <motion.a
+                  href={`${HEY_LINK}/posts/${displayPost.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="hey-button"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginRight: "12px",
+                    cursor: "pointer",
+                  }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  whileHover={{
+                    scale: 1.1,
+                    transition: { duration: 0.2 },
+                  }}
+                >
+                  <motion.img
+                    src={HEY_LOGO_URL}
+                    alt="View on Hey"
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "50%",
+                    }}
+                    whileHover={{ rotate: 10 }}
+                  />
+                </motion.a>
+              </Tooltip>
+            )}
+
+            <Tooltip
+              isDarkTheme={isDarkBackground}
+              content={formatDetailedTimestamp(displayPost.timestamp)}
+            >
+              <div style={styles.timestamp}>
+                {formatTimestamp(displayPost.timestamp)}
+              </div>
+            </Tooltip>
+          </div>
         </div>
 
         {/* Post content - use displayPost for content */}
@@ -1253,33 +1330,50 @@ export const Post = ({
         )}
 
         {/* Stats section - NEW */}
-        {showStats && displayPost.stats && !isDisplayPostDeleted && (
-          <div style={styles.statsContainer}>
-            {(visibleStats as Array<keyof typeof statIcons>).map((statName) => {
-              if (!(statName in displayPost.stats!)) return null
-              const value =
-                displayPost.stats![statName as keyof typeof displayPost.stats]
-              if (value === 0) return null
+        {showStats &&
+          displayPost.stats &&
+          !isDisplayPostDeleted &&
+          !areAllStatsZero && (
+            <div style={styles.statsContainer}>
+              {(visibleStats as Array<keyof typeof statIcons>).map(
+                (statName) => {
+                  if (!(statName in displayPost.stats!)) return null
 
-              // Ensure value is a number
-              const numericValue = typeof value === "number" ? value : 0
+                  // Use the updated count for upvotes (likes) and reposts from local state
+                  let value
+                  if (statName === "upvotes") {
+                    value = likeCount
+                  } else if (statName === "reposts") {
+                    value = repostCount
+                  } else {
+                    value =
+                      displayPost.stats![
+                        statName as keyof typeof displayPost.stats
+                      ]
+                  }
 
-              // Get appropriate label (singular or plural)
-              const label =
-                numericValue === 1
-                  ? statLabels[statName].singular
-                  : statLabels[statName].plural
+                  if (value === 0) return null
 
-              return (
-                <div key={statName} style={styles.statItem}>
-                  <span>
-                    {formatNumber(numericValue)} {label}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        )}
+                  // Ensure value is a number
+                  const numericValue = typeof value === "number" ? value : 0
+
+                  // Get appropriate label (singular or plural)
+                  const label =
+                    numericValue === 1
+                      ? statLabels[statName].singular
+                      : statLabels[statName].plural
+
+                  return (
+                    <div key={statName} style={styles.statItem}>
+                      <span>
+                        {formatNumber(numericValue)} {label}
+                      </span>
+                    </div>
+                  )
+                }
+              )}
+            </div>
+          )}
 
         {/* Interaction buttons - use displayPost stats for counts */}
         {!hideInteractions && !isDisplayPostDeleted && (
@@ -1342,7 +1436,7 @@ export const Post = ({
           />
         )}
 
-        {/* Animation styles */}
+        {/* Add CSS for hover effect */}
         <style
           dangerouslySetInnerHTML={{
             __html: `

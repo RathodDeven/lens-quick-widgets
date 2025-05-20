@@ -43,6 +43,7 @@ export default function PostsListShowcase() {
   const [showStats, setShowStats] = useState<boolean>(true)
   const [showFollow, setShowFollow] = useState<boolean>(true)
   const [showUnfollowButton, setShowUnfollowButton] = useState<boolean>(false)
+  const [showHeyButton, setShowHeyButton] = useState<boolean>(false)
   const [contentPreviewLimit, setContentPreviewLimit] = useState<number>(400)
   const [visibleStats, setVisibleStats] = useState<string[]>([
     'upvotes',
@@ -163,6 +164,7 @@ export default function PostsListShowcase() {
     if (!showStats) params.append('showStats', 'false')
     if (!showFollow) params.append('showFollow', 'false')
     if (showUnfollowButton) params.append('showUnfollowButton', 'true')
+    if (showHeyButton) params.append('showHeyButton', 'true')
     if (contentPreviewLimit !== 400)
       params.append('previewLimit', contentPreviewLimit.toString())
 
@@ -282,6 +284,7 @@ export default function PostsListShowcase() {
   showStats={${showStats}}
   showFollow={${showFollow}}
   showUnfollowButton={${showUnfollowButton}}
+  showHeyButton={${showHeyButton}}
   contentPreviewLimit={${contentPreviewLimit}}
   visibleStats={[${visibleStats.map((s) => `"${s}"`).join(', ')}]}
   visibleButtons={[${visibleButtons.map((b) => `"${b}"`).join(', ')}]}
@@ -481,6 +484,18 @@ export default function PostsListShowcase() {
                       />
                     }
                     label="Show Unfollow Button"
+                  />
+                </Box>
+
+                <Box mt={1}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={showHeyButton}
+                        onChange={(e) => setShowHeyButton(e.target.checked)}
+                      />
+                    }
+                    label="Show Hey Button"
                   />
                 </Box>
 
@@ -796,6 +811,7 @@ export default function PostsListShowcase() {
                     showStats={showStats}
                     showFollow={showFollow}
                     showUnfollowButton={showUnfollowButton}
+                    showHeyButton={showHeyButton}
                     contentPreviewLimit={contentPreviewLimit}
                     visibleStats={visibleStats as any}
                     visibleButtons={visibleButtons as any}
