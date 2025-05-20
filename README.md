@@ -176,11 +176,20 @@ For detailed documentation on components, props, and usage examples:
 - [Web App Documentation](/apps/web/README.md)
 - [UI Package Documentation](/packages/ui/README.md)
 
+## Future Development and Improvements
+
+We're continuously working to enhance Lens Quick Widgets. Here are some planned improvements:
+
+- **ML-Enhanced Posts Feed** - Adding parameters to PostsList to fetch ML-recommended posts feed for specific handles
+- **Group Components** - New components for displaying and interacting with Lens groups
+- **Enhanced Content Compatibility** - Expanding content focus compatibility in the Post component
+- **Mutual Followers** - Integrating mutual followers information in the Account component when logged in
+- **Additional Customization Options** - More styling and configuration options for all components
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License.
 This project is licensed under the MIT License.
