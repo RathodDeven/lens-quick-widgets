@@ -6,6 +6,8 @@
 
 A React library to quickly start developing with [Lens Protocol](https://lens.xyz/). Focus on what matters by abstracting away complex UI and interactions. Easily showcase your posts, accounts, and more with just a few lines of code.
 
+> This project is heavily inspired by [lens-widgets](https://github.com/lens-protocol/lens-widgets) from Lens Protocol.
+
 ## Features
 
 - 🚀 **Rapid Development** - Start building in minutes with pre-built components
@@ -126,21 +128,17 @@ You can embed any component on external websites (blogs, streamers' overlay, etc
 ```html
 <!-- Embed a lens post -->
 <iframe
-  src="https://your-app.com/embed/post?postId=0x01-0x01&theme=dark&showHeyButton=true"
+  src="https://lens-quick-widgets-web.vercel.app/embed/post?postId=0x01-0x01&theme=dark&showHeyButton=true"
   width="100%"
   height="400px"
-  frameborder="0"
->
-</iframe>
+></iframe>
 
 <!-- Embed a user profile -->
 <iframe
-  src="https://your-app.com/embed/account?localName=stani&theme=green&showHeyButton=true"
+  src="https://lens-quick-widgets-web.vercel.app/embed/account?localName=stani&theme=green&showHeyButton=true"
   width="100%"
   height="300px"
-  frameborder="0"
->
-</iframe>
+></iframe>
 ```
 
 ## Running Locally
@@ -184,4 +182,5 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
+This project is licensed under the MIT License.
 This project is licensed under the MIT License.

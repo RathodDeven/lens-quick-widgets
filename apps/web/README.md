@@ -93,7 +93,7 @@ The demo app provides endpoints for embedding Lens components in iframes. Each c
 You can configure each component through URL parameters. For example:
 
 ```
-https://your-app.com/embed/post?postId=0x01-0x01&theme=dark&hideInteractions=true
+https://lens-quick-widgets-web.vercel.app/embed/post?postId=0x01-0x01&theme=dark&hideInteractions=true
 ```
 
 The component showcase pages provide a UI to configure components and generate the iframe embed code.
