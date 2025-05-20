@@ -142,6 +142,7 @@ import { Post, Theme } from "lens-quick-widgets"
 | showStats           | `boolean`                                                                                        | `true`        | Show post statistics                       |
 | showFollow          | `boolean`                                                                                        | `true`        | Show follow button for post author         |
 | showUnfollowButton  | `boolean`                                                                                        | `false`       | Show unfollow button for followed users    |
+| showHeyButton       | `boolean`                                                                                        | `false`       | Show button to open post on Hey.xyz        |
 | contentPreviewLimit | `number`                                                                                         | `400`         | Character limit before "Show more"         |
 | visibleStats        | `Array<"upvotes" \| "comments" \| "reposts" \| "quotes" \| "bookmarks" \| "collects" \| "tips">` | All stats     | Which stats to display                     |
 | visibleButtons      | `Array<"like" \| "repost" \| "comment">`                                                         | All buttons   | Which interaction buttons to show          |
@@ -165,6 +166,7 @@ import { PostsList, PageSize, Theme } from "lens-quick-widgets"
   widthOfPostCard="100%"
   hideInteractions={false}
   showStats={true}
+  showHeyButton={true}
   contentPreviewLimit={200}
   onPostClick={(post) => console.log("Post clicked:", post.id)}
   onLike={(post) => console.log("Post liked:", post.id)}
@@ -213,6 +215,7 @@ import { Account, Theme, Size } from "lens-quick-widgets"
   size={Size.medium}
   hideFollowButton={false}
   showUnfollowButton={false}
+  showHeyButton={true}
   fontSize="16px"
   onAccountLoad={(account) => console.log("Account loaded:", account)}
   onClick={(account, stats) => console.log("Account clicked:", account, stats)}
@@ -235,6 +238,7 @@ import { Account, Theme, Size } from "lens-quick-widgets"
 | followButtonTextColor      | `string`                                     | -             | Custom follow button text color                                 |
 | hideFollowButton           | `boolean`                                    | `false`       | Hide the follow button                                          |
 | showUnfollowButton         | `boolean`                                    | `false`       | Show unfollow button for followed users                         |
+| showHeyButton              | `boolean`                                    | `false`       | Show button to open profile on Hey.xyz                          |
 | fontSize                   | `string`                                     | Based on size | Custom font size                                                |
 | onAccountLoad              | `(account: AccountType) => void`             | -             | Called when account data loads                                  |
 | onError                    | `(error: Error) => void`                     | -             | Called on error                                                 |

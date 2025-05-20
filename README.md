@@ -95,6 +95,7 @@ import {
   postId="0x01-0x01"
   theme={Theme.dark}
   showFollow={true}
+  showHeyButton={true}
 />
 
 // Display a feed of posts
@@ -108,6 +109,7 @@ import {
 <Account
   localName="stani"
   theme={Theme.green}
+  showHeyButton={true}
 />
 
 // Display a list of accounts
@@ -124,7 +126,7 @@ You can embed any component on external websites (blogs, streamers' overlay, etc
 ```html
 <!-- Embed a lens post -->
 <iframe
-  src="https://your-app.com/embed/post?postId=0x01-0x01&theme=dark"
+  src="https://your-app.com/embed/post?postId=0x01-0x01&theme=dark&showHeyButton=true"
   width="100%"
   height="400px"
   frameborder="0"
@@ -133,7 +135,7 @@ You can embed any component on external websites (blogs, streamers' overlay, etc
 
 <!-- Embed a user profile -->
 <iframe
-  src="https://your-app.com/embed/account?localName=stani&theme=green"
+  src="https://your-app.com/embed/account?localName=stani&theme=green&showHeyButton=true"
   width="100%"
   height="300px"
   frameborder="0"
